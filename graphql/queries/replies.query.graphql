@@ -1,0 +1,30 @@
+query Replies($data: FeedPostInput!) {
+  replies(data: $data) {
+    edges {
+      cursor
+      node {
+        id
+        content
+        createdAt
+        author {
+          id
+          name
+          username
+        }
+        parent {
+          id
+        }
+        replies {
+          count
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    count
+  }
+}

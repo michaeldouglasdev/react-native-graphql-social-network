@@ -1,0 +1,18 @@
+mutation ReplyPost($data: ReplyPostInput!) {
+  replyPost(data: $data) {
+    id
+    content
+    createdAt
+    author {
+      id
+      name
+      username
+    }
+    replies {
+      count
+    }
+    parent {
+      id
+    }
+  }
+}

@@ -1,15 +1,18 @@
-import { StyleSheet } from "react-native";
-import { Avatar } from "../avatar/avatar";
+import { StyleSheet, View } from "react-native";
+import { Avatar } from "../avatar/avatar.component";
 import { VBox } from "../grid/vbox";
 import { Container } from "../grid/container";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export const Header = () => {
+  const { top } = useSafeAreaInsets();
+
   return (
-    <Container safe style={styles.container}>
+    <View style={[styles.container, { paddingTop: 30 + top / 2 }]}>
       <VBox>
         <Avatar size="large" />
       </VBox>
-    </Container>
+    </View>
   );
 };
 

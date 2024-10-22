@@ -1,20 +1,20 @@
-import { router } from "expo-router";
+import { router, useRouter } from "expo-router";
 
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
 import { HBox } from "../grid/hbox";
-import { Avatar } from "../avatar/avatar";
+import { Avatar } from "../avatar/avatar.component";
 import { VBox } from "../grid/vbox";
 import { graphql } from "@/graphql/__generated__";
 import {
   FragmentType,
-  getFragmentData,
+  useFragment,
 } from "@/graphql/__generated__/fragment-masking";
-import { PostItemFragment } from "@/graphql/__generated__/graphql";
+//import { PostItemFragment } from "@/graphql/__generated__/graphql";
 
-const PostItemFragment2 = graphql(`
+export const PostItemFragment = graphql(`
   fragment PostItem on Post {
     id
     content
@@ -27,21 +27,54 @@ const PostItemFragment2 = graphql(`
     replies {
       count
     }
+    likes {
+      count
+      byCurrentUser
+    }
   }
 `);
 
 interface PostProps {
-  post: PostItemFragment; //FragmentType<typeof PostItemFragment>; //PostItemFragment;
+  data: FragmentType<typeof PostItemFragment>;
   index?: number;
+  onLike: (postId: string) => void;
+  onUnlike: (postId: string) => void;
 }
-export const Post: React.FC<PostProps> = ({ index = 0, post, ...props }) => {
-  //const post = getFragmentData(PostItemFragment, props.post);
+export const Post: React.FC<PostProps> = ({
+  index = 0,
+  onLike,
+  onUnlike,
+  ...props
+}) => {
+  const router = useRouter();
+  const post = useFragment(PostItemFragment, props.data);
+
+  const handleLike = () => {
+    onLike(post.id);
+  };
+
+  const handleUnlike = () => {
+    onUnlike(post.id);
+  };
 
   const handlePostPress = () => {
     router.navigate({
-      pathname: "/(tabs)/posts/[id]",
+      pathname: "/(authenticated)/(tabs)/(posts)/details/[id]",
+      //pathname: "/(tabs)/(posts)/details/[id]",
+
       params: {
         id: post.id,
+      },
+    });
+  };
+
+  const handleClickAvatar = () => {
+    router.navigate({
+      pathname: "/(authenticated)/(tabs)/(posts)/profile/[id]",
+      //pathname: "/(tabs)/(posts)/profile/[id]",
+
+      params: {
+        id: post.author.id,
       },
     });
   };
@@ -50,16 +83,20 @@ export const Post: React.FC<PostProps> = ({ index = 0, post, ...props }) => {
     <TouchableOpacity onPress={handlePostPress}>
       <View style={styles.container}>
         <HBox>
-          <Avatar />
-
-          <VBox>
-            <HBox>
-              <Text style={styles.name}>{post.author.name}</Text>
-              <Text style={styles.username}>@{post.author.username} · </Text>
-              <Text style={styles.createdAt}>{post.createdAt}</Text>
-              <Text style={styles.name}>- {index}</Text>
+          <TouchableOpacity onPress={handleClickAvatar}>
+            <Avatar user={post.author} />
+          </TouchableOpacity>
+          <VBox expanded>
+            <HBox justifyContent="space-between">
+              <HBox>
+                <Text style={styles.name}>{post.author.name}</Text>
+                <Text style={styles.username}>@{post.author.username} · </Text>
+                <Text style={styles.createdAt}>{post.createdAt}</Text>
+              </HBox>
+              <Text style={styles.index}># {index}</Text>
             </HBox>
             <Text style={styles.content}>{post.content}</Text>
+            <Text style={styles.content}>{post.id}</Text>
 
             <HBox>
               <HBox>
@@ -71,8 +108,19 @@ export const Post: React.FC<PostProps> = ({ index = 0, post, ...props }) => {
                 <Text style={styles.iconLabel}>0</Text>
               </HBox>
               <HBox>
-                <FontAwesome name="heart-o" style={styles.icon} />
-                <Text style={styles.iconLabel}>0</Text>
+                {post.likes.byCurrentUser ? (
+                  <TouchableOpacity onPress={handleUnlike}>
+                    <FontAwesome
+                      name="heart"
+                      style={[styles.icon, styles.iconFill]}
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity onPress={handleLike}>
+                    <FontAwesome name="heart-o" style={styles.icon} />
+                  </TouchableOpacity>
+                )}
+                <Text style={styles.iconLabel}>{post.likes.count}</Text>
               </HBox>
             </HBox>
           </VBox>
@@ -115,9 +163,16 @@ const styles = StyleSheet.create({
     color: "#FFF",
     fontSize: 16,
   },
+  iconFill: {
+    color: "#F6009C",
+  },
   iconLabel: {
     color: "#FFF",
     marginLeft: 8,
     marginRight: 56,
+  },
+  index: {
+    color: "#aaa",
+    fontSize: 11,
   },
 });

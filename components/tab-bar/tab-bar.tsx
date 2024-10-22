@@ -2,7 +2,9 @@ import { StyleSheet, View } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 
 import { TabBarItem } from "./tab-bar-item";
-import { router } from "expo-router";
+//import { router } from "expo-router";
+import { FloatingButton } from "../floating-button/floating-button.component";
+import { useRouter } from "expo-router";
 
 type TabPropsProps = BottomTabBarProps & {};
 export const TabBar: React.FC<TabPropsProps> = ({
@@ -10,13 +12,16 @@ export const TabBar: React.FC<TabPropsProps> = ({
   navigation,
   descriptors,
 }) => {
-  const handleNavigation = (route: any) => {
+  const router = useRouter();
+  const handleTabNavigation = (route: any) => {
     const routeName = route === "index" ? "" : route;
+    console.log("routeName", routeName);
 
     // @ts-ignore
-    router.navigate<string>("/" + routeName);
+    router.navigate<string>("/(authenticated)/(tabs)/" + routeName);
   };
 
+  console.log("routes", activeIndex, routes);
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -28,7 +33,7 @@ export const TabBar: React.FC<TabPropsProps> = ({
             <TabBarItem
               active={active}
               options={options}
-              onPress={() => handleNavigation(route.name)}
+              onPress={() => handleTabNavigation(route.name)}
               key={route.key}
             />
           );

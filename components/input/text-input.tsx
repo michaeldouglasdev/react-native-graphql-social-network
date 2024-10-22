@@ -39,10 +39,10 @@ export const TextInput: React.FC<TextInputProps> = ({
         value={field.value}
         onChangeText={field.onChange}
         style={styles.input}
-        {...props}
         placeholderTextColor="#555"
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
+        {...props}
       />
 
       {label ? (
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 2,
     borderColor: "#444444",
-    backgroundColor: "#2C2C2C",
+    //backgroundColor: "#2C2C2C",
   },
   rounded: {
     borderRadius: 24,
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     color: "#FFF",
   },
   labelContainer: {
-    backgroundColor: "#F2F2F2",
+    backgroundColor: "#1A1919",
     alignSelf: "flex-start",
     paddingHorizontal: 8,
     position: "absolute",
@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
+    color: "#FFF",
   },
   containerFocus: {
     //borderColor: "#F6009C66",

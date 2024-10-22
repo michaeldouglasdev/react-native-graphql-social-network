@@ -1,36 +1,21 @@
-import { MeDocument } from "@/graphql/__generated__/graphql";
-import { useQuery } from "@apollo/client";
-import { Stack, useRouter } from "expo-router";
-import { useEffect } from "react";
+import { useMeQuery } from "@/hooks/me.query.hook";
+import { Stack } from "expo-router";
+
+import LoginScreen from "./login";
 
 export const Routes: React.FC = () => {
-  const { data } = useQuery(MeDocument);
-  const isAuthenticated = data?.me;
+  const { data } = useMeQuery();
+  console.log("user data", data);
 
-  const router = useRouter();
+  if (data) {
+    return (
+      <Stack>
+        <Stack.Screen name="(authenticated)" options={{ headerShown: false }} />
 
-  // Redirect based on authentication status
-  useEffect(() => {
-    if (isAuthenticated) {
-      router.replace("/(tabs)/posts");
-    } else {
-      router.replace("/");
-    }
-  }, [isAuthenticated]);
+        <Stack.Screen name="login" options={{ headerShown: false }} />
+      </Stack>
+    );
+  }
 
-  return (
-    <Stack
-      initialRouteName={true ? "(tabs)" : "index"}
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: "red",
-        },
-      }}
-    >
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-    </Stack>
-  );
+  return <LoginScreen />;
 };

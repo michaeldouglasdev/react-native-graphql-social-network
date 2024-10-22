@@ -7,6 +7,18 @@ import {
   ViewStyle,
 } from "react-native";
 
+enum HBoxMarginSize {
+  SMALL = 8,
+  MEDIUM = 16,
+  LARGE = 32,
+}
+
+const sizes = {
+  small: HBoxMarginSize.SMALL,
+  medium: HBoxMarginSize.MEDIUM,
+  large: HBoxMarginSize.LARGE,
+};
+
 type HBoxProps = {
   children: React.ReactNode;
   noSpacing?: boolean;
@@ -21,6 +33,8 @@ type HBoxProps = {
   alignSelf?: "center" | "flex-start" | "flex-end" | "stretch" | "baseline";
   expanded?: boolean;
   style?: ViewStyle;
+  vMargin?: "small" | "medium" | "large";
+  hMargin?: "small" | "medium" | "large";
 };
 
 export const HBox: React.FC<HBoxProps> = ({
@@ -31,6 +45,8 @@ export const HBox: React.FC<HBoxProps> = ({
   expanded,
   children,
   style,
+  hMargin,
+  vMargin,
 }) => {
   return (
     <View
@@ -42,7 +58,8 @@ export const HBox: React.FC<HBoxProps> = ({
           alignSelf,
         },
         expanded && styles.expanded,
-        noSpacing && styles.noSpacing,
+        vMargin && { marginVertical: sizes[vMargin] },
+        hMargin && { marginHorizontal: sizes[hMargin] },
         style,
       ]}
     >
@@ -61,8 +78,5 @@ const styles = StyleSheet.create({
   },
   expanded: {
     flex: 1,
-  },
-  noSpacing: {
-    paddingHorizontal: 0,
   },
 });

@@ -7,19 +7,19 @@ const codegen: CodegenConfig = {
     "graphql/mutations/*.mutation.graphql",
     "components/**/*.component.tsx",
     "app/**/*.tsx",
+    "app/*.tsx",
+    "hooks/*.ts",
   ],
   generates: {
     "./graphql/__generated__/": {
       preset: "client",
-      plugins: [
-        "fragment-matcher",
-        // "graphql-code-generator-plugin-typescript-typename-typeguards",
-      ],
-      /*presetConfig: {
-        fragmentMasking: false,
-      },*/
+      plugins: ["fragment-matcher"],
+      config: {
+        useExplicitTyping: true,
+      },
       presetConfig: {
-        fragmentMasking: false,
+        fragmentMasking: true,
+        persistedDocuments: true,
       },
     },
   },

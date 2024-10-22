@@ -1,5 +1,17 @@
 import { StyleSheet, View, ViewStyle } from "react-native";
 
+enum VBoxMarginSize {
+  SMALL = 8,
+  MEDIUM = 16,
+  LARGE = 32,
+}
+
+const sizes = {
+  small: VBoxMarginSize.SMALL,
+  medium: VBoxMarginSize.MEDIUM,
+  large: VBoxMarginSize.LARGE,
+};
+
 interface VBoxProps {
   children: React.ReactNode;
   noSpacing?: boolean;
@@ -13,6 +25,10 @@ interface VBoxProps {
   alignItems?: "center" | "flex-start" | "flex-end" | "stretch" | "baseline";
   alignSelf?: "center" | "flex-start" | "flex-end" | "stretch" | "baseline";
   expanded?: boolean;
+  vMargin?: "small" | "medium" | "large";
+  hMargin?: "small" | "medium" | "large";
+  vPadding?: "small" | "medium" | "large";
+  hPadding?: "small" | "medium" | "large";
   style?: ViewStyle;
 }
 export const VBox: React.FC<VBoxProps> = ({
@@ -22,6 +38,10 @@ export const VBox: React.FC<VBoxProps> = ({
   alignSelf = "stretch",
   expanded,
   style,
+  vMargin,
+  hMargin,
+  vPadding,
+  hPadding,
   children,
 }) => {
   return (
@@ -35,6 +55,10 @@ export const VBox: React.FC<VBoxProps> = ({
         },
         expanded && styles.expanded,
         noSpacing && styles.noSpacing,
+        vMargin && { marginVertical: sizes[vMargin] },
+        hMargin && { marginHorizontal: sizes[hMargin] },
+        vPadding && { paddingVertical: sizes[vPadding] },
+        hPadding && { paddingHorizontal: sizes[hPadding] },
         style,
       ]}
     >
@@ -49,6 +73,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "stretch",
     alignSelf: "stretch",
+    position: "relative",
   },
   expanded: {
     flex: 1,

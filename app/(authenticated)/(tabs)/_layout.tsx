@@ -3,17 +3,17 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Feather from "@expo/vector-icons/Feather";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-import { Link, Tabs } from "expo-router";
-import { Pressable, Text } from "react-native";
+import { Tabs } from "expo-router";
+import { Text } from "react-native";
 
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
-import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { TabBar } from "@/components/tab-bar/tab-bar";
 import { Header } from "@/components/header/header.component";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  console.log("Tab Layout");
 
   return (
     <Tabs
@@ -38,15 +38,24 @@ export default function TabLayout() {
       tabBar={(props) => <TabBar {...props} />}
     >
       <Tabs.Screen
-        name="posts"
+        name="(posts)"
         options={{
           tabBarIcon: ({ color, size }) => (
             <AntDesign name="home" color={color} size={size} />
           ),
+          // @ts-ignore
+          floatingButton: () => {
+            return {
+              onPress: () => {
+                console.log("clickou aqui2");
+              },
+              icon: <AntDesign name="plus" />,
+            };
+          },
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="search"
         options={{
           title: "Tab Two",
           tabBarIcon: ({ color, size }) => (

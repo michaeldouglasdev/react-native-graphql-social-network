@@ -1,16 +1,23 @@
-import { graphql } from "@/graphql/__generated__";
-import { NotificationItemFragment } from "@/graphql/__generated__/graphql";
-import { ReplyPostNotification } from "./reply-post-notification.component";
+import { FragmentType, graphql, useFragment } from "@/graphql/__generated__";
+//import { NotificationItemFragment } from "@/graphql/__generated__/graphql";
+import {
+  ReplyPostNotification,
+  ReplyPostNotificationItemFragment,
+} from "./reply-post-notification.component";
 
 function isReplyPostNotification(
-  notification: NotificationItemFragment
-): notification is NotificationItemFragment & {
-  __typename: "ReplyPostNotification";
-} {
-  return notification.__typename === "ReplyPostNotification";
+  notification: FragmentType<typeof NotificationItemFragment>
+  // @ts-ignore
+): notification is FragmentType<typeof ReplyPostNotificationItemFragment> {
+  const notificationFragment = useFragment(
+    NotificationItemFragment,
+    notification
+  );
+
+  return notificationFragment.__typename === "ReplyPostNotification";
 }
 
-const NotificationItem = graphql(/* GraphQL */ `
+export const NotificationItemFragment = graphql(/* GraphQL */ `
   fragment NotificationItem on Notification {
     id
     createdAt
@@ -29,11 +36,11 @@ const NotificationItem = graphql(/* GraphQL */ `
 `);
 
 type NotificationProps = {
-  notification: NotificationItemFragment;
+  notification: FragmentType<typeof NotificationItemFragment>;
 };
-export const Notification: React.FC<NotificationProps> = ({ notification }) => {
-  if (isReplyPostNotification(notification)) {
-    return <ReplyPostNotification notification={notification} />;
+export const Notification: React.FC<NotificationProps> = (props) => {
+  if (isReplyPostNotification(props.notification)) {
+    return <ReplyPostNotification notification={props.notification} />;
   }
 
   return null;

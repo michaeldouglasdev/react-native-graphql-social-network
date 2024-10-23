@@ -42,7 +42,7 @@ const NotificationsScreen: React.FC = () => {
   });
   useSubscription(NotificationScreen_Subscription, {
     onData(options) {
-      console.log("onData", options);
+      console.log("Subscription onData", options);
       const { data, client } = options;
       const cacheData = client.cache.readQuery({
         query: NotificationScreen_Query,

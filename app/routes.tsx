@@ -5,7 +5,6 @@ import LoginScreen from "./login";
 
 export const Routes: React.FC = () => {
   const { data } = useMeQuery();
-  console.log("user data", data);
 
   if (data) {
     return (

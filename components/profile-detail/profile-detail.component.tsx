@@ -9,6 +9,10 @@ import { VSeparator } from "../grid/vseparator";
 import { Button } from "../button/button";
 import { MeQuery, useMeQuery } from "@/hooks/me.query.hook";
 import { useMutation } from "@apollo/client";
+import * as ImagePicker from "expo-image-picker";
+import { manipulateAsync } from "expo-image-manipulator";
+import { ReactNativeFile } from "@/app/_layout";
+import { StorageService } from "@/services/storage.service";
 
 export const FollowUser_Mutation = graphql(`
   mutation FollowUser($id: ID!) {
@@ -27,6 +31,7 @@ export const UserDetail_QueryFragment = graphql(`
       id
       name
       username
+      avatar
       createdAt
       followers {
         count
@@ -40,6 +45,11 @@ export const UserDetail_QueryFragment = graphql(`
   }
 `);
 
+export const UploadAvatar_Mutation = graphql(`
+  mutation UploadAvatar($file: File!) {
+    uploadAvatar(file: $file)
+  }
+`);
 type ProfileDetailProps = {
   data: FragmentType<typeof UserDetail_QueryFragment>;
 };
@@ -48,6 +58,7 @@ export const ProfileDetail: React.FC<ProfileDetailProps> = (props) => {
   const { data: me } = useMeQuery();
   const [followUser] = useMutation(FollowUser_Mutation);
   const [unfollowUser] = useMutation(UnfollowUser_Mutation);
+  const [uploadAvatar] = useMutation(UploadAvatar_Mutation);
 
   if (!user) {
     return;
@@ -131,13 +142,61 @@ export const ProfileDetail: React.FC<ProfileDetailProps> = (props) => {
     });
   };
 
+  const handleClickAvatar = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    const file = result.assets?.[0];
+
+    if (file) {
+      const rnFile = new ReactNativeFile({
+        name: `name.jpeg`,
+        type: "image",
+        uri: file.uri,
+      });
+
+      uploadAvatar({
+        variables: {
+          file: rnFile,
+        },
+        update(cache, data) {
+          const userId = `User:${user.id}`;
+
+          cache.modify({
+            id: userId,
+            fields: {
+              avatar(existing) {
+                return data.data?.uploadAvatar || existing;
+              },
+            },
+          });
+
+          const cachedUser = cache.readQuery({
+            query: MeQuery,
+          });
+          StorageService.setItem("ME", cachedUser?.me);
+        },
+      });
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.background}></View>
-      <VBox>
+      <VBox hPadding="small">
         <HBox justifyContent="space-between">
           <View>
-            <Avatar size="xlarge" style={styles.avatar} />
+            <Avatar
+              size="xlarge"
+              style={styles.avatar}
+              user={user}
+              border
+              navigate={false}
+              onPress={handleClickAvatar}
+            />
           </View>
           <View style={styles.profileActions}>
             {me?.me.id === user.id ? (

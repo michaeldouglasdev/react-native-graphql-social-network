@@ -12,6 +12,7 @@ import {
   FragmentType,
   useFragment,
 } from "@/graphql/__generated__/fragment-masking";
+import { useMutation } from "@apollo/client";
 //import { PostItemFragment } from "@/graphql/__generated__/graphql";
 
 export const PostItemFragment = graphql(`
@@ -23,6 +24,7 @@ export const PostItemFragment = graphql(`
       id
       name
       username
+      avatar
     }
     replies {
       count
@@ -33,28 +35,79 @@ export const PostItemFragment = graphql(`
     }
   }
 `);
+const LikePost_Mutation = graphql(`
+  mutation LikePost($postId: ID!) {
+    likePost(id: $postId)
+  }
+`);
+
+const UnlikePost_Mutation = graphql(`
+  mutation UnlikePost($postId: ID!) {
+    unlikePost(id: $postId)
+  }
+`);
 
 interface PostProps {
   data: FragmentType<typeof PostItemFragment>;
   index?: number;
-  onLike: (postId: string) => void;
-  onUnlike: (postId: string) => void;
 }
-export const Post: React.FC<PostProps> = ({
-  index = 0,
-  onLike,
-  onUnlike,
-  ...props
-}) => {
+export const Post: React.FC<PostProps> = ({ index = 0, ...props }) => {
   const router = useRouter();
   const post = useFragment(PostItemFragment, props.data);
+  const [likePostMutation] = useMutation(LikePost_Mutation);
+  const [unlikePostMutation] = useMutation(UnlikePost_Mutation);
 
-  const handleLike = () => {
-    onLike(post.id);
+  const handleUnlike = async () => {
+    await unlikePostMutation({
+      variables: {
+        postId: post.id,
+      },
+      update(cache) {
+        cache.modify({
+          id: `Post:${post.id}`,
+          fields: {
+            likes(existingLikes = {}) {
+              const newCount = existingLikes.count - 1;
+              return {
+                ...existingLikes,
+                count: newCount,
+                byCurrentUser: false,
+              };
+            },
+          },
+        });
+      },
+      optimisticResponse: {
+        unlikePost: true,
+      },
+    });
   };
-
-  const handleUnlike = () => {
-    onUnlike(post.id);
+  const handleLike = async () => {
+    await likePostMutation({
+      variables: {
+        postId: post.id,
+      },
+      update(cache) {
+        cache.modify({
+          id: `Post:${post.id}`,
+          fields: {
+            likes(existingLikes = {}) {
+              const newCount = existingLikes.count + 1;
+              return {
+                ...existingLikes,
+                count: newCount,
+                byCurrentUser: true,
+              };
+            },
+          },
+          optimistic: true,
+        });
+      },
+      optimisticResponse: {
+        likePost: true,
+        __typename: "Mutation",
+      },
+    });
   };
 
   const handlePostPress = () => {

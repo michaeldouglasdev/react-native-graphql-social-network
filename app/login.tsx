@@ -22,6 +22,7 @@ export const LoginMutation = graphql(`
         username
         email
         role
+        avatar
       }
       accessToken
       expirationTime

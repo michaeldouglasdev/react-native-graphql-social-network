@@ -24,19 +24,20 @@ const documents = {
     "\n  query Notifications($data: NotificationsInput!) {\n    ...NotificationList_QueryFragment\n  }\n": types.NotificationsDocument,
     "\n  query Search($data: FeedPostInput!) {\n    ...Feed_QueryFragment\n  }\n": types.SearchDocument,
     "\n  mutation CreatePost($data: CreatePostInput!) {\n    createPost(data: $data) {\n      ...PostItem\n    }\n  }\n": types.CreatePostDocument,
-    "\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      user {\n        id\n        name\n        username\n        email\n        role\n      }\n      accessToken\n      expirationTime\n    }\n  }\n": types.LoginDocument,
-    "\n  fragment UserAvatar on User {\n    id\n    name\n  }\n": types.UserAvatarFragmentDoc,
+    "\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      user {\n        id\n        name\n        username\n        email\n        role\n        avatar\n      }\n      accessToken\n      expirationTime\n    }\n  }\n": types.LoginDocument,
+    "\n  fragment UserAvatar on User {\n    id\n    name\n    avatar\n  }\n": types.UserAvatarFragmentDoc,
     "\n  fragment Feed_QueryFragment on Query {\n    feed(data: $data) {\n      edges {\n        cursor\n        node {\n          ...PostItem\n        }\n      }\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n        startCursor\n        endCursor\n      }\n    }\n  }\n": types.Feed_QueryFragmentFragmentDoc,
     "\n  fragment NotificationList_QueryFragment on Query {\n    notifications(data: $data) {\n      edges {\n        cursor\n        node {\n          ...NotificationItem\n        }\n      }\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n        startCursor\n        endCursor\n      }\n    }\n  }\n": types.NotificationList_QueryFragmentFragmentDoc,
-    "\n  fragment NotificationItem on Notification {\n    id\n    createdAt\n    fromUser {\n      id\n      name\n      username\n    }\n    ... on ReplyPostNotification {\n      post {\n        id\n        content\n      }\n    }\n  }\n": types.NotificationItemFragmentDoc,
+    "\n  fragment NotificationItem on Notification {\n    id\n    createdAt\n    fromUser {\n      id\n      name\n      username\n      avatar\n    }\n    ... on ReplyPostNotification {\n      post {\n        id\n        content\n      }\n    }\n  }\n": types.NotificationItemFragmentDoc,
     "\n  fragment ReplyPostNotificationItem on ReplyPostNotification {\n    id\n    createdAt\n    fromUser {\n      id\n      name\n      username\n    }\n    post {\n      id\n      content\n    }\n  }\n": types.ReplyPostNotificationItemFragmentDoc,
-    "\n  fragment PostDetail_QueryFragment on Query {\n    post(id: $id) {\n      id\n      content\n      author {\n        id\n        name\n        username\n      }\n      createdAt\n      replies(data: $dataReplies) {\n        edges {\n          cursor\n          node {\n            ...PostItem\n          }\n        }\n        pageInfo {\n          hasNextPage\n          hasPreviousPage\n          startCursor\n          endCursor\n        }\n        count\n      }\n      likes {\n        count\n        byCurrentUser\n      }\n    }\n  }\n": types.PostDetail_QueryFragmentFragmentDoc,
-    "\n  fragment PostItem on Post {\n    id\n    content\n    createdAt\n    author {\n      id\n      name\n      username\n    }\n    replies {\n      count\n    }\n    likes {\n      count\n      byCurrentUser\n    }\n  }\n": types.PostItemFragmentDoc,
+    "\n  fragment PostDetail_QueryFragment on Query {\n    post(id: $id) {\n      id\n      content\n      author {\n        id\n        name\n        username\n        avatar\n      }\n      createdAt\n      replies(data: $dataReplies) {\n        edges {\n          cursor\n          node {\n            ...PostItem\n          }\n        }\n        pageInfo {\n          hasNextPage\n          hasPreviousPage\n          startCursor\n          endCursor\n        }\n        count\n      }\n      likes {\n        count\n        byCurrentUser\n      }\n    }\n  }\n": types.PostDetail_QueryFragmentFragmentDoc,
+    "\n  fragment PostItem on Post {\n    id\n    content\n    createdAt\n    author {\n      id\n      name\n      username\n      avatar\n    }\n    replies {\n      count\n    }\n    likes {\n      count\n      byCurrentUser\n    }\n  }\n": types.PostItemFragmentDoc,
     "\n  fragment ProfileDetailListPost_QueryFragment on Query {\n    feed(data: $dataFeed) {\n      edges {\n        cursor\n        node {\n          ...PostItem\n        }\n      }\n      pageInfo {\n        hasNextPage\n        hasPreviousPage\n        startCursor\n        endCursor\n      }\n    }\n  }\n": types.ProfileDetailListPost_QueryFragmentFragmentDoc,
     "\n  mutation FollowUser($id: ID!) {\n    followUser(id: $id)\n  }\n": types.FollowUserDocument,
     "\n  mutation UnfollowUser($id: ID!) {\n    unfollowUser(id: $id)\n  }\n": types.UnfollowUserDocument,
-    "\n  fragment UserDetail_QueryFragment on Query {\n    user(id: $id) @include(if: $includeUser) {\n      id\n      name\n      username\n      createdAt\n      followers {\n        count\n        byCurrentUser\n      }\n      following {\n        count\n        byCurrentUser\n      }\n    }\n  }\n": types.UserDetail_QueryFragmentFragmentDoc,
-    "\n  query Me {\n    me {\n      id\n      name\n      username\n      email\n      role\n    }\n  }\n": types.MeDocument,
+    "\n  fragment UserDetail_QueryFragment on Query {\n    user(id: $id) @include(if: $includeUser) {\n      id\n      name\n      username\n      avatar\n      createdAt\n      followers {\n        count\n        byCurrentUser\n      }\n      following {\n        count\n        byCurrentUser\n      }\n    }\n  }\n": types.UserDetail_QueryFragmentFragmentDoc,
+    "\n  mutation UploadAvatar($file: File!) {\n    uploadAvatar(file: $file)\n  }\n": types.UploadAvatarDocument,
+    "\n  query Me {\n    me {\n      id\n      name\n      username\n      email\n      role\n      avatar\n    }\n  }\n": types.MeDocument,
 };
 
 /**
@@ -100,11 +101,11 @@ export function graphql(source: "\n  mutation CreatePost($data: CreatePostInput!
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      user {\n        id\n        name\n        username\n        email\n        role\n      }\n      accessToken\n      expirationTime\n    }\n  }\n"): (typeof documents)["\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      user {\n        id\n        name\n        username\n        email\n        role\n      }\n      accessToken\n      expirationTime\n    }\n  }\n"];
+export function graphql(source: "\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      user {\n        id\n        name\n        username\n        email\n        role\n        avatar\n      }\n      accessToken\n      expirationTime\n    }\n  }\n"): (typeof documents)["\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      user {\n        id\n        name\n        username\n        email\n        role\n        avatar\n      }\n      accessToken\n      expirationTime\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  fragment UserAvatar on User {\n    id\n    name\n  }\n"): (typeof documents)["\n  fragment UserAvatar on User {\n    id\n    name\n  }\n"];
+export function graphql(source: "\n  fragment UserAvatar on User {\n    id\n    name\n    avatar\n  }\n"): (typeof documents)["\n  fragment UserAvatar on User {\n    id\n    name\n    avatar\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -116,7 +117,7 @@ export function graphql(source: "\n  fragment NotificationList_QueryFragment on 
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  fragment NotificationItem on Notification {\n    id\n    createdAt\n    fromUser {\n      id\n      name\n      username\n    }\n    ... on ReplyPostNotification {\n      post {\n        id\n        content\n      }\n    }\n  }\n"): (typeof documents)["\n  fragment NotificationItem on Notification {\n    id\n    createdAt\n    fromUser {\n      id\n      name\n      username\n    }\n    ... on ReplyPostNotification {\n      post {\n        id\n        content\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  fragment NotificationItem on Notification {\n    id\n    createdAt\n    fromUser {\n      id\n      name\n      username\n      avatar\n    }\n    ... on ReplyPostNotification {\n      post {\n        id\n        content\n      }\n    }\n  }\n"): (typeof documents)["\n  fragment NotificationItem on Notification {\n    id\n    createdAt\n    fromUser {\n      id\n      name\n      username\n      avatar\n    }\n    ... on ReplyPostNotification {\n      post {\n        id\n        content\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -124,11 +125,11 @@ export function graphql(source: "\n  fragment ReplyPostNotificationItem on Reply
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  fragment PostDetail_QueryFragment on Query {\n    post(id: $id) {\n      id\n      content\n      author {\n        id\n        name\n        username\n      }\n      createdAt\n      replies(data: $dataReplies) {\n        edges {\n          cursor\n          node {\n            ...PostItem\n          }\n        }\n        pageInfo {\n          hasNextPage\n          hasPreviousPage\n          startCursor\n          endCursor\n        }\n        count\n      }\n      likes {\n        count\n        byCurrentUser\n      }\n    }\n  }\n"): (typeof documents)["\n  fragment PostDetail_QueryFragment on Query {\n    post(id: $id) {\n      id\n      content\n      author {\n        id\n        name\n        username\n      }\n      createdAt\n      replies(data: $dataReplies) {\n        edges {\n          cursor\n          node {\n            ...PostItem\n          }\n        }\n        pageInfo {\n          hasNextPage\n          hasPreviousPage\n          startCursor\n          endCursor\n        }\n        count\n      }\n      likes {\n        count\n        byCurrentUser\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  fragment PostDetail_QueryFragment on Query {\n    post(id: $id) {\n      id\n      content\n      author {\n        id\n        name\n        username\n        avatar\n      }\n      createdAt\n      replies(data: $dataReplies) {\n        edges {\n          cursor\n          node {\n            ...PostItem\n          }\n        }\n        pageInfo {\n          hasNextPage\n          hasPreviousPage\n          startCursor\n          endCursor\n        }\n        count\n      }\n      likes {\n        count\n        byCurrentUser\n      }\n    }\n  }\n"): (typeof documents)["\n  fragment PostDetail_QueryFragment on Query {\n    post(id: $id) {\n      id\n      content\n      author {\n        id\n        name\n        username\n        avatar\n      }\n      createdAt\n      replies(data: $dataReplies) {\n        edges {\n          cursor\n          node {\n            ...PostItem\n          }\n        }\n        pageInfo {\n          hasNextPage\n          hasPreviousPage\n          startCursor\n          endCursor\n        }\n        count\n      }\n      likes {\n        count\n        byCurrentUser\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  fragment PostItem on Post {\n    id\n    content\n    createdAt\n    author {\n      id\n      name\n      username\n    }\n    replies {\n      count\n    }\n    likes {\n      count\n      byCurrentUser\n    }\n  }\n"): (typeof documents)["\n  fragment PostItem on Post {\n    id\n    content\n    createdAt\n    author {\n      id\n      name\n      username\n    }\n    replies {\n      count\n    }\n    likes {\n      count\n      byCurrentUser\n    }\n  }\n"];
+export function graphql(source: "\n  fragment PostItem on Post {\n    id\n    content\n    createdAt\n    author {\n      id\n      name\n      username\n      avatar\n    }\n    replies {\n      count\n    }\n    likes {\n      count\n      byCurrentUser\n    }\n  }\n"): (typeof documents)["\n  fragment PostItem on Post {\n    id\n    content\n    createdAt\n    author {\n      id\n      name\n      username\n      avatar\n    }\n    replies {\n      count\n    }\n    likes {\n      count\n      byCurrentUser\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -144,11 +145,15 @@ export function graphql(source: "\n  mutation UnfollowUser($id: ID!) {\n    unfo
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  fragment UserDetail_QueryFragment on Query {\n    user(id: $id) @include(if: $includeUser) {\n      id\n      name\n      username\n      createdAt\n      followers {\n        count\n        byCurrentUser\n      }\n      following {\n        count\n        byCurrentUser\n      }\n    }\n  }\n"): (typeof documents)["\n  fragment UserDetail_QueryFragment on Query {\n    user(id: $id) @include(if: $includeUser) {\n      id\n      name\n      username\n      createdAt\n      followers {\n        count\n        byCurrentUser\n      }\n      following {\n        count\n        byCurrentUser\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  fragment UserDetail_QueryFragment on Query {\n    user(id: $id) @include(if: $includeUser) {\n      id\n      name\n      username\n      avatar\n      createdAt\n      followers {\n        count\n        byCurrentUser\n      }\n      following {\n        count\n        byCurrentUser\n      }\n    }\n  }\n"): (typeof documents)["\n  fragment UserDetail_QueryFragment on Query {\n    user(id: $id) @include(if: $includeUser) {\n      id\n      name\n      username\n      avatar\n      createdAt\n      followers {\n        count\n        byCurrentUser\n      }\n      following {\n        count\n        byCurrentUser\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query Me {\n    me {\n      id\n      name\n      username\n      email\n      role\n    }\n  }\n"): (typeof documents)["\n  query Me {\n    me {\n      id\n      name\n      username\n      email\n      role\n    }\n  }\n"];
+export function graphql(source: "\n  mutation UploadAvatar($file: File!) {\n    uploadAvatar(file: $file)\n  }\n"): (typeof documents)["\n  mutation UploadAvatar($file: File!) {\n    uploadAvatar(file: $file)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query Me {\n    me {\n      id\n      name\n      username\n      email\n      role\n      avatar\n    }\n  }\n"): (typeof documents)["\n  query Me {\n    me {\n      id\n      name\n      username\n      email\n      role\n      avatar\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

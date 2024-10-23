@@ -48,75 +48,8 @@ type FeedProps = {
   ) => void;*/
 };
 
-const LikePost_Mutation = graphql(`
-  mutation LikePost($postId: ID!) {
-    likePost(id: $postId)
-  }
-`);
-
-const UnlikePost_Mutation = graphql(`
-  mutation UnlikePost($postId: ID!) {
-    unlikePost(id: $postId)
-  }
-`);
-
 export const Feed: React.FC<FeedProps> = ({ onFetchMore, ...props }) => {
   const data = useFragment(Feed_QueryFragment, props.data);
-  const [likePostMutation] = useMutation(LikePost_Mutation);
-  const [unlikePostMutation] = useMutation(UnlikePost_Mutation);
-
-  const handleLike = async (postId: string) => {
-    await likePostMutation({
-      variables: {
-        postId: postId,
-      },
-      update(cache) {
-        cache.modify({
-          id: `Post:${postId}`,
-          fields: {
-            likes(existingLikes = {}) {
-              const newCount = existingLikes.count + 1;
-              return {
-                ...existingLikes,
-                count: newCount,
-                byCurrentUser: true,
-              };
-            },
-          },
-          optimistic: true,
-        });
-      },
-      optimisticResponse: {
-        likePost: true,
-      },
-    });
-  };
-
-  const handleUnlike = async (postId: string) => {
-    await unlikePostMutation({
-      variables: {
-        postId: postId,
-      },
-      update(cache) {
-        cache.modify({
-          id: `Post:${postId}`,
-          fields: {
-            likes(existingLikes = {}) {
-              const newCount = existingLikes.count - 1;
-              return {
-                ...existingLikes,
-                count: newCount,
-                byCurrentUser: false,
-              };
-            },
-          },
-        });
-      },
-      optimisticResponse: {
-        unlikePost: true,
-      },
-    });
-  };
 
   const handleFetchMore = () => {
     onFetchMore();
@@ -126,15 +59,7 @@ export const Feed: React.FC<FeedProps> = ({ onFetchMore, ...props }) => {
     data: ListRenderItemInfo<{ node: FragmentType<typeof PostItemFragment> }>
   ) => {
     const post = useFragment(PostItemFragment, data.item.node);
-    return (
-      <Post
-        data={data.item.node}
-        key={post.id}
-        onLike={handleLike}
-        onUnlike={handleUnlike}
-        index={data.index}
-      />
-    );
+    return <Post data={data.item.node} key={post.id} index={data.index} />;
   };
 
   if (!data.feed) {

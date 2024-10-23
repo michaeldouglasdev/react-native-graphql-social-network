@@ -1,5 +1,5 @@
 import { graphql } from "@/graphql/__generated__";
-import { useQuery } from "@apollo/client";
+import { useQuery, WatchQueryFetchPolicy } from "@apollo/client";
 
 export const MeQuery = graphql(`
   query Me {
@@ -9,13 +9,17 @@ export const MeQuery = graphql(`
       username
       email
       role
+      avatar
     }
   }
 `);
 
-export const useMeQuery = () => {
+type UseMeQueryOptions = {
+  fetchPolicy?: WatchQueryFetchPolicy;
+};
+export const useMeQuery = (options?: UseMeQueryOptions) => {
   const data = useQuery(MeQuery, {
-    fetchPolicy: "cache-only",
+    fetchPolicy: options?.fetchPolicy ?? "cache-only",
   });
 
   return data;

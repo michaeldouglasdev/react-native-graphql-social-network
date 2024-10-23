@@ -14,6 +14,7 @@ import { graphql } from "@/graphql/__generated__";
 import { useMutation } from "@apollo/client";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { InputArea } from "@/components/input-area/input-area.component";
+import { useMeQuery } from "@/hooks/me.query.hook";
 
 /*const CreatePost_MutationFragment = graphql(`
     fragment CreatePost_MutationFragment on Mutation {
@@ -38,6 +39,7 @@ const CreatePostScreen: React.FC = () => {
   const [createPostMutation] = useMutation(CreatePost_Mutation);
   const { control, handleSubmit, formState } = useForm<FormField>();
   const { isDirty, isValid } = formState;
+  const { data } = useMeQuery();
 
   const handleGoBack = () => {
     router.back();
@@ -72,7 +74,7 @@ const CreatePostScreen: React.FC = () => {
           />
         </View>
         <View style={styles.content}>
-          <Avatar />
+          <Avatar user={data?.me} />
           <InputArea
             name="content"
             control={control}
@@ -100,7 +102,8 @@ const styles = StyleSheet.create({
   },
   content: {
     flexDirection: "row",
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
+    paddingTop: 16,
   },
 });
 

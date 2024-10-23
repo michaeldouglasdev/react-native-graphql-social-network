@@ -70,6 +70,7 @@ export const PostDetail_QueryFragment = graphql(`
         id
         name
         username
+        avatar
       }
       createdAt
       replies(data: $dataReplies) {
@@ -194,74 +195,12 @@ export const PostDetail: React.FC<PostDetailProps> = ({
     });
   };
 
-  const handleLike = async (postId: string) => {
-    await likePostMutation({
-      variables: {
-        postId: postId,
-      },
-      update(cache) {
-        cache.modify({
-          id: `Post:${postId}`,
-          fields: {
-            likes(existingLikes = {}) {
-              const newCount = existingLikes.count + 1;
-              return {
-                ...existingLikes,
-                count: newCount,
-                byCurrentUser: true,
-              };
-            },
-          },
-          optimistic: true,
-        });
-      },
-      optimisticResponse: {
-        likePost: true,
-        __typename: "Mutation",
-      },
-    });
-  };
-
-  const handleUnlike = async (postId: string) => {
-    await unlikePostMutation({
-      variables: {
-        postId: postId,
-      },
-      update(cache) {
-        cache.modify({
-          id: `Post:${postId}`,
-          fields: {
-            likes(existingLikes = {}) {
-              const newCount = existingLikes.count - 1;
-              return {
-                ...existingLikes,
-                count: newCount,
-                byCurrentUser: false,
-              };
-            },
-          },
-        });
-      },
-      optimisticResponse: {
-        unlikePost: true,
-      },
-    });
-  };
-
   const renderItemPost = (
     data: ListRenderItemInfo<{ node: FragmentType<typeof PostItemFragment> }>
   ) => {
     const reply = useFragment(PostItemFragment, data.item.node);
 
-    return (
-      <Post
-        data={data.item.node}
-        key={reply.id}
-        index={data.index}
-        onLike={handleLike}
-        onUnlike={handleUnlike}
-      />
-    );
+    return <Post data={data.item.node} key={reply.id} index={data.index} />;
   };
 
   return (

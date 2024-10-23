@@ -52,7 +52,7 @@ export class StorageService {
     }
   }
 
-  async clearAll(): Promise<void> {
+  static async clearAll(): Promise<void> {
     try {
       await AsyncStorage.clear();
     } catch (error) {

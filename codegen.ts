@@ -1,4 +1,5 @@
 import { CodegenConfig } from "@graphql-codegen/cli";
+//import { addTypenameSelectionDocumentTransform } from "@graphql-codegen/client-preset";
 
 const codegen: CodegenConfig = {
   schema: "http://localhost:4000/graphql",
@@ -19,8 +20,9 @@ const codegen: CodegenConfig = {
       },
       presetConfig: {
         fragmentMasking: true,
-        persistedDocuments: true,
+        //persistedDocuments: true,
       },
+      //documentTransforms: [addTypenameSelectionDocumentTransform],
     },
   },
 };

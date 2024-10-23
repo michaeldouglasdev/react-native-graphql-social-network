@@ -33,6 +33,9 @@ import { MeQuery } from "@/hooks/me.query.hook";
 import { createPersistedQueryLink } from "@apollo/client/link/persisted-queries";
 import * as Crypto from "expo-crypto";
 
+//@ts-ignore
+import createUploadLink from "apollo-upload-client/createUploadLink";
+
 export { ErrorBoundary } from "expo-router";
 
 SplashScreen.preventAutoHideAsync();
@@ -52,8 +55,9 @@ export default function RootLayout() {
 
   useEffect(() => {
     async function initializeApolloClient() {
+      const uri = "http://localhost:4000/graphql";
       const httpLink = new HttpLink({
-        uri: "http://localhost:4000/graphql",
+        uri,
       });
 
       const pqLink = createPersistedQueryLink({ sha256: crypto });
@@ -86,7 +90,7 @@ export default function RootLayout() {
           );
         },
         wsLink,
-        httpLink
+        createUploadLink({ uri, isExtractableFile: customIsExtractableFile })
       );
 
       const cache = new InMemoryCache({
@@ -207,6 +211,16 @@ export default function RootLayout() {
             __typename: "Query",
           },
         });
+
+        const meValue = cache.readQuery({
+          query: MeQuery,
+        });
+
+        // write cache has failed
+        if (!meValue) {
+          console.log("Resetting all storage data");
+          await StorageService.clearAll();
+        }
       }
 
       setClient(apolloClient);
@@ -246,4 +260,27 @@ function RootLayoutNav({ client }: { client: ApolloClient<any> }) {
       </ThemeProvider>
     </ApolloProvider>
   );
+}
+
+function customIsExtractableFile(value: unknown): value is ReactNativeFile {
+  return value instanceof ReactNativeFile;
+}
+
+export class ReactNativeFile {
+  uri: string;
+  name: string;
+  type: string;
+  constructor({
+    uri,
+    name,
+    type,
+  }: {
+    uri: string;
+    name: string;
+    type: string;
+  }) {
+    this.uri = uri;
+    this.name = name;
+    this.type = type;
+  }
 }

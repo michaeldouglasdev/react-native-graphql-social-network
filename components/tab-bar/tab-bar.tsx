@@ -15,13 +15,11 @@ export const TabBar: React.FC<TabPropsProps> = ({
   const router = useRouter();
   const handleTabNavigation = (route: any) => {
     const routeName = route === "index" ? "" : route;
-    console.log("routeName", routeName);
 
     // @ts-ignore
     router.navigate<string>("/(authenticated)/(tabs)/" + routeName);
   };
 
-  console.log("routes", activeIndex, routes);
   return (
     <View style={styles.container}>
       <View style={styles.content}>

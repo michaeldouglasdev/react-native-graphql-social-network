@@ -47,7 +47,7 @@ export default function TabLayout() {
           floatingButton: () => {
             return {
               onPress: () => {
-                console.log("clickou aqui2");
+                console.log("click floating");
               },
               icon: <AntDesign name="plus" />,
             };

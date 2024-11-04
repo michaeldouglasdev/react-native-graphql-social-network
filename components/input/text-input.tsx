@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Control, useController } from "react-hook-form";
+import { Control, Controller, useController } from "react-hook-form";
 import {
   StyleSheet,
   View,
@@ -8,41 +8,57 @@ import {
   Text,
 } from "react-native";
 
+enum TextInputSize {
+  SMALL = 40,
+  MEDIUM = 44,
+  LARGE = 48,
+}
+const sizes = {
+  small: TextInputSize.SMALL,
+  medium: TextInputSize.MEDIUM,
+  large: TextInputSize.LARGE,
+};
+type SizeVariant = "small" | "medium" | "large";
+type BorderVariant = "default" | "rounded" | "none";
 type TextInputProps = TextInputPropsRN & {
   name: string;
-  control?: Control<any>;
+  control: Control<any>;
   label?: string;
-  borderType?: "default" | "rounded";
+  border?: BorderVariant;
+  size?: SizeVariant;
 };
 export const TextInput: React.FC<TextInputProps> = ({
   name,
   control,
   label,
-  borderType = "default",
+  border = "default",
+  size = "large",
+  style,
   ...props
 }) => {
-  const { field } = useController({
-    control,
-    defaultValue: "",
-    name,
-  });
   const [focus, setFocus] = useState(false);
   return (
     <View
       style={[
         styles.container,
-        borderType === "rounded" && styles.rounded,
+        getBorder(border),
         focus && styles.containerFocus,
       ]}
     >
-      <TextInputRN
-        value={field.value}
-        onChangeText={field.onChange}
-        style={styles.input}
-        placeholderTextColor="#555"
-        onFocus={() => setFocus(true)}
-        onBlur={() => setFocus(false)}
-        {...props}
+      <Controller
+        name={name}
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <TextInputRN
+            value={value}
+            onChangeText={onChange}
+            style={[styles.input, getSize(size)]}
+            placeholderTextColor="#555"
+            onFocus={() => setFocus(true)}
+            onBlur={() => setFocus(false)}
+            {...props}
+          />
+        )}
       />
 
       {label ? (
@@ -56,13 +72,15 @@ export const TextInput: React.FC<TextInputProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    height: 48,
     borderRadius: 4,
     borderWidth: 2,
     borderColor: "#444444",
     //backgroundColor: "#2C2C2C",
   },
-  rounded: {
+  borderNone: {
+    borderWidth: 0,
+  },
+  borderRounded: {
     borderRadius: 24,
   },
   input: {
@@ -70,6 +88,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 16,
+
     color: "#FFF",
   },
   labelContainer: {
@@ -88,3 +107,18 @@ const styles = StyleSheet.create({
     //borderColor: "#F6009C66",
   },
 });
+
+const getBorder = (border: BorderVariant) => {
+  switch (border) {
+    case "default":
+      return;
+    case "rounded":
+      return styles.borderRounded;
+    case "none":
+      return styles.borderNone;
+  }
+};
+
+const getSize = (size: SizeVariant) => {
+  return { height: sizes[size] };
+};

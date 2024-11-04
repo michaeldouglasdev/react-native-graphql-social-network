@@ -1,9 +1,9 @@
 import { StyleSheet, TouchableOpacity } from "react-native";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 type FloatingButtonProps = {
   onPress: () => void;
-  iconName: keyof typeof AntDesign.glyphMap;
+  iconName: keyof typeof MaterialCommunityIcons.glyphMap;
 };
 
 export const FloatingButton: React.FC<FloatingButtonProps> = ({
@@ -16,7 +16,7 @@ export const FloatingButton: React.FC<FloatingButtonProps> = ({
       onPress={onPress}
       style={styles.container}
     >
-      <AntDesign name={iconName} style={styles.icon} size={24} />
+      <MaterialCommunityIcons name={iconName} style={styles.icon} size={24} />
     </TouchableOpacity>
   );
 };

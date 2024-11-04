@@ -116,83 +116,38 @@ export default function RootLayout() {
                     ],
                   ],
                 ],
-                /*[
-                  "data",
-                  [
-                    "where",
-                    ["content", "parentPostId", ["equals"]],
-                    "order",
-                    ["createdAt"],
-                  ],
-                ],*/
-                /* merge(existing = { edges: [] }, incoming) {
-                  return {
-                    ...incoming,
-                    edges: [...existing.edges, ...incoming.edges],
-                  };
-                },*/
               },
-              /*post: {
-                keyArgs: ["id"], // The unique identifier for the post
-                merge(existing = {}, incoming, { args }) {
-                  // Existing replies or empty structure
-                  const existingReplies = existing.replies || {
-                    edges: [],
-                    count: 0,
-                  };
-                  const incomingReplies = incoming.replies || {
-                    edges: [],
-                    count: 0,
-                  };
-
-                  // Merge the edges (avoiding duplicates)
-                  const mergedEdges = [
-                    ...(existingReplies.edges || []),
-                    ...(incomingReplies.edges || []),
-                  ].filter(
-                    (edge, index, self) =>
-                      index ===
-                      self.findIndex((e) => e.node.id === edge.node.id)
+              conversation: (_, { args, toReference }) => {
+                console.log("args", args, _);
+                return toReference({
+                  __typename: "ConversationDirect",
+                  id: args?.id,
+                });
+              },
+              conversations: {
+                keyArgs: false,
+              },
+            },
+          },
+          ConversationDirect: {
+            fields: {
+              messages: {
+                keyArgs: false,
+                merge(existing = { edges: [] }, incoming) {
+                  const existingMessageIds = new Set(
+                    existing.edges.map((edge: any) => edge.node.id)
                   );
 
-                  // Use the incoming pageInfo to keep track of pagination state
-                  const mergedPageInfo = incomingReplies.pageInfo;
+                  const uniqueIncomingEdges = incoming.edges.filter(
+                    (edge: any) => !existingMessageIds.has(edge.node.id)
+                  );
 
                   return {
                     ...incoming,
-                    replies: {
-                      edges: mergedEdges,
-                      pageInfo: mergedPageInfo,
-                      count: incomingReplies.count || existingReplies.count,
-                    },
+                    edges: [...existing.edges, ...uniqueIncomingEdges],
                   };
                 },
-              },*/
-              /*keyArgs: [
-                  "id",
-                  "data",
-                  [
-                    "where",
-                    ["parentPostId", ["equals"]],
-                    "order",
-                    ["createdAt"],
-                  ],
-                ],
-                merge(existing = {}, incoming) {
-                  const existingReplies = existing.replies || { edges: [] };
-                  const incomingReplies = incoming.replies || { edges: [] };
-
-                  const mergedReplies = {
-                    ...incomingReplies,
-                    edges: [...existingReplies.edges, ...incomingReplies.edges],
-                  };
-
-                  return {
-                    ...incoming,
-                    replies: mergedReplies,
-                  };
-                },
-            }*/
+              },
             },
           },
         },
@@ -200,7 +155,7 @@ export default function RootLayout() {
 
       const apolloClient = new ApolloClient({
         cache,
-        link: ApolloLink.from([AuthorizationLink, pqLink, splitLink]),
+        link: ApolloLink.from([AuthorizationLink, splitLink]),
       });
 
       if (me) {
@@ -216,7 +171,6 @@ export default function RootLayout() {
           query: MeQuery,
         });
 
-        // write cache has failed
         if (!meValue) {
           console.log("Resetting all storage data");
           await StorageService.clearAll();

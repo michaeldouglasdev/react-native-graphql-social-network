@@ -1,17 +1,10 @@
-import { Stack } from "expo-router";
 import { Header } from "@/components/header/header.component";
+import { Stack } from "expo-router";
 
-const PostsLayout: React.FC = () => {
+const ConversationsLayout: React.FC = () => {
   return (
-    <Stack>
-      <Stack.Screen
-        name="index"
-        options={{
-          header: () => {
-            return <Header />;
-          },
-        }}
-      />
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="index" />
       <Stack.Screen
         name="details/[id]"
         options={{
@@ -24,13 +17,13 @@ const PostsLayout: React.FC = () => {
         }}
       />
       <Stack.Screen
-        name="profile/[id]"
+        name="create/index"
         options={{
-          headerShown: false,
+          presentation: "modal",
         }}
       />
     </Stack>
   );
 };
 
-export default PostsLayout;
+export default ConversationsLayout;

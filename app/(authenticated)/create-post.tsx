@@ -15,6 +15,7 @@ import { useMutation } from "@apollo/client";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { InputArea } from "@/components/input-area/input-area.component";
 import { useMeQuery } from "@/hooks/me.query.hook";
+import { HomeScreen_Query } from "./(tabs)/(posts)";
 
 /*const CreatePost_MutationFragment = graphql(`
     fragment CreatePost_MutationFragment on Mutation {
@@ -52,6 +53,7 @@ const CreatePostScreen: React.FC = () => {
           content: form.content,
         },
       },
+
       onCompleted() {
         router.back();
       },

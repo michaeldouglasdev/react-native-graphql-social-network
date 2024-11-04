@@ -7,7 +7,7 @@ import {
   NotificationList_QueryFragment,
 } from "@/components/notification/notification-list/notification-list.component";
 import { NotificationItemFragment } from "@/components/notification/notification.component";
-import { NotificationEdge } from "@/graphql/__generated__/graphql";
+import { Header } from "@/components/header/header.component";
 
 const NotificationSubscribe_SubscriptionFragment = graphql(`
   fragment NotificationSubscribe_SubscriptionFragment on Subscription {
@@ -84,7 +84,10 @@ const NotificationsScreen: React.FC = () => {
   });
 
   return (
-    <Container>{data ? <NotificationList data={data} /> : null}</Container>
+    <Container>
+      <Header />
+      {data ? <NotificationList data={data} /> : null}
+    </Container>
   );
 };
 

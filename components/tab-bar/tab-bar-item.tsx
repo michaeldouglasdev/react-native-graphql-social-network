@@ -19,6 +19,7 @@ export const TabBarItem: React.FC<TabBarItemProps> = ({
   const handlePress = () => {
     onPress();
   };
+
   return (
     <Pressable
       onPress={handlePress}

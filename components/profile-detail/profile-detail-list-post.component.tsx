@@ -39,15 +39,7 @@ export const ProfileDetailListPost: React.FC<ProfileDetailListPostProps> = ({
   ) => {
     const post = useFragment(PostItemFragment, data.item.node);
 
-    return (
-      <Post
-        data={data.item.node}
-        key={post.id}
-        onLike={() => null}
-        onUnlike={() => null}
-        index={data.index}
-      />
-    );
+    return <Post data={data.item.node} key={post.id} index={data.index} />;
   };
 
   const handleFetchMore = () => {

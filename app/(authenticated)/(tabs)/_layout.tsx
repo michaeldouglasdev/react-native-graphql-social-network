@@ -13,7 +13,7 @@ import { Header } from "@/components/header/header.component";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  console.log("Tab Layout");
+  console.log("Tabs Layout");
 
   return (
     <Tabs
@@ -64,7 +64,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="three"
+        name="(conversations)"
         options={{
           tabBarIcon: ({ color, size, focused }) => (
             <FontAwesome
@@ -85,10 +85,6 @@ export default function TabLayout() {
               size={size}
             />
           ),
-          headerShown: true,
-          header: () => {
-            return <Header />;
-          },
         }}
       />
     </Tabs>

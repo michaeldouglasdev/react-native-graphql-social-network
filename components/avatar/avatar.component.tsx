@@ -1,4 +1,9 @@
-import { DocumentType, FragmentType, graphql } from "@/graphql/__generated__";
+import {
+  DocumentType,
+  FragmentType,
+  graphql,
+  useFragment,
+} from "@/graphql/__generated__";
 import { useRouter } from "expo-router";
 import { StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
 import { Image } from "expo-image";
@@ -12,11 +17,12 @@ enum AvatarSize {
 
 type AvatarProps = {
   size?: "small" | "medium" | "large" | "xlarge";
-  user?: DocumentType<typeof UserAvatar_UserFragment>;
+  user?: FragmentType<typeof UserAvatar_UserFragment>;
   style?: ViewStyle;
   border?: boolean;
   navigate?: boolean;
   onPress?: () => void;
+  disabled?: boolean;
 };
 
 const sizes = {
@@ -29,21 +35,21 @@ const sizes = {
 export const UserAvatar_UserFragment = graphql(`
   fragment UserAvatar on User {
     id
-    name
     avatar
   }
 `);
 
 export const Avatar: React.FC<AvatarProps> = ({
   size = "medium",
-  user,
   border = false,
   navigate = true,
   onPress,
   style,
+  disabled = false,
+  ...props
 }) => {
   const router = useRouter();
-
+  const user = useFragment(UserAvatar_UserFragment, props.user);
   const handlePressAvatar = () => {
     if (user) {
       if (navigate) {
@@ -76,6 +82,7 @@ export const Avatar: React.FC<AvatarProps> = ({
       <TouchableOpacity
         onPress={handlePressAvatar}
         style={{ width: sizes[size] }}
+        disabled={disabled}
       >
         {avatarIsNull ? (
           <View

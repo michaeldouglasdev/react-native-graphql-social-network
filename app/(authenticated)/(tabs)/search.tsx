@@ -83,7 +83,7 @@ export default function SearchScreen() {
       <View style={[styles.inputWrapper, { paddingTop: top }]}>
         <TextInput
           name="content"
-          borderType="rounded"
+          border="rounded"
           control={control}
           onSubmitEditing={handleSubmit(handleSearch)}
           placeholder="Type your text..."

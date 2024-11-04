@@ -11,18 +11,6 @@ import {
   PostDetail_QueryFragment,
 } from "@/components/post/post-detail/post-detail.component";
 
-const LikePost_Mutation = graphql(`
-  mutation LikePost($postId: ID!) {
-    likePost(id: $postId)
-  }
-`);
-
-const UnlikePost_Mutation = graphql(`
-  mutation UnlikePost($postId: ID!) {
-    unlikePost(id: $postId)
-  }
-`);
-
 const PostScreen_Query = graphql(`
   query PostScreen($id: ID!, $dataReplies: FeedPostInput!) {
     ...PostDetail_QueryFragment
@@ -140,12 +128,12 @@ const PostScreen: React.FC = () => {
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={100} // Adjust based on your header height
+        keyboardVerticalOffset={100}
       >
         <View style={styles.inputWrapper}>
           <TextInput
             name="reply"
-            borderType="rounded"
+            border="rounded"
             control={control}
             onSubmitEditing={handleSubmit(handleReply)}
             placeholder="Type your text..."

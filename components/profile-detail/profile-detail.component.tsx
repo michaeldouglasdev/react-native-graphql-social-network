@@ -111,7 +111,7 @@ export const ProfileDetail: React.FC<ProfileDetailProps> = (props) => {
       update(cache) {
         if (me?.me) {
           cache.modify({
-            id: `User`,
+            id: `User${me.me.id}`,
             fields: {
               following(existing) {
                 const newCount = existing.count + 1;

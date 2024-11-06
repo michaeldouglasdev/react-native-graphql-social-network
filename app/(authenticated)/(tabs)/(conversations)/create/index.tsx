@@ -133,31 +133,7 @@ const CreateConversationScreen: React.FC = () => {
           },
         },
       },
-      update(cache, result) {
-        /* if (result.data?.createConversation) {
-          const conversationsMasked = cache.readQuery({
-            query: ConversationsScreen_Query
-          });
-          
-          const conversations = useFragment(Conversations_QueryFragment, conversationsMasked);
-
-          if (conversations) {
-            cache.writeQuery<DocumentType<typeof Conversations_QueryFragment>>({
-              query: ConversationsScreen_Query,
-              data: {
-                conversations: {
-                  ...conversations?.conversations,
-                  edges: [
-                    { },
-                    ...conversations.conversations.edges
-                  ]
-                } 
-              }
-            })
-          }
-          
-        }*/
-      },
+      //update(cache, result) {},
       onCompleted(data, clientOptions) {
         if (data.createConversation) {
           router.back();

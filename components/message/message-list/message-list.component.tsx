@@ -1,12 +1,7 @@
 import { FragmentType, graphql, useFragment } from "@/graphql/__generated__";
 import { ListRenderItemInfo, StyleSheet, View } from "react-native";
 import { Message, MessageItemFragment } from "../message.component";
-import Animated, {
-  CurvedTransition,
-  FadingTransition,
-  JumpingTransition,
-  LinearTransition,
-} from "react-native-reanimated";
+import Animated, { LinearTransition } from "react-native-reanimated";
 import { useApolloClient, useLazyQuery } from "@apollo/client";
 import { OrderBy } from "@/graphql/__generated__/graphql";
 
@@ -116,6 +111,7 @@ export const MessageList: React.FC<MessageListProps> = (props) => {
       contentContainerStyle={{
         flexGrow: 1,
         flexDirection: "column-reverse",
+        justifyContent: "flex-end",
       }}
       itemLayoutAnimation={LinearTransition}
       inverted

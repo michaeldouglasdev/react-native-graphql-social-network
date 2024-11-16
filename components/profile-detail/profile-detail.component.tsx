@@ -5,14 +5,12 @@ import { FragmentType, graphql, useFragment } from "@/graphql/__generated__";
 import { VBox } from "../grid/vbox";
 import { HBox } from "../grid/hbox";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { VSeparator } from "../grid/vseparator";
 import { Button } from "../button/button";
 import { MeQuery, useMeQuery } from "@/hooks/me.query.hook";
 import { useMutation } from "@apollo/client";
 import * as ImagePicker from "expo-image-picker";
-import { manipulateAsync } from "expo-image-manipulator";
-import { ReactNativeFile } from "@/app/_layout";
 import { StorageService } from "@/services/storage.service";
+import { ReactNativeFile } from "@/graphql/links/upload.link";
 
 export const FollowUser_Mutation = graphql(`
   mutation FollowUser($id: ID!) {
@@ -31,7 +29,7 @@ export const UserDetail_QueryFragment = graphql(`
       id
       name
       username
-      avatar
+      ...UserAvatar
       createdAt
       followers {
         count

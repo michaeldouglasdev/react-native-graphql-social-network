@@ -38,7 +38,6 @@ const LoginScreen: React.FC = () => {
   const [loginMutation] = useMutation(LoginDocument);
 
   const handleLogin: SubmitHandler<LoginForm> = (form) => {
-    console.log("handleLogin");
     loginMutation({
       variables: {
         data: {
@@ -47,8 +46,6 @@ const LoginScreen: React.FC = () => {
         },
       },
       update: async (cache, { data }) => {
-        console.log("cahce", cache);
-        console.log("login data", data);
         if (data) {
           cache.writeQuery({
             query: MeQuery,

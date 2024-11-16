@@ -23,7 +23,7 @@ const Home: React.FC = () => {
           },
         },
         connection: {
-          first: 6,
+          first: 10,
         },
         order: {
           createdAt: OrderBy.Desc,
@@ -33,7 +33,6 @@ const Home: React.FC = () => {
   });
 
   const handleClickFloatingButton = () => {
-    //router.navigate("/(authenticated)/create-post");
     router.navigate("/create-post");
   };
   const handleFetchMore = () => {
@@ -70,7 +69,13 @@ const Home: React.FC = () => {
   };
   return (
     <Container>
-      {data ? <Feed data={data} onFetchMore={handleFetchMore} /> : null}
+      {data ? (
+        <Feed
+          data={data}
+          onFetchMore={handleFetchMore}
+          dataQuery={HomeScreen_Query}
+        />
+      ) : null}
       <FloatingButton iconName="plus" onPress={handleClickFloatingButton} />
     </Container>
   );

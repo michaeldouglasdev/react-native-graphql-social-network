@@ -1,5 +1,5 @@
 import { Container } from "@/components/grid/container";
-import { useApolloClient, useQuery, useSubscription } from "@apollo/client";
+import { useQuery, useSubscription } from "@apollo/client";
 
 import { DocumentType, graphql, useFragment } from "@/graphql/__generated__";
 import {

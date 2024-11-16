@@ -13,7 +13,6 @@ import { Header } from "@/components/header/header.component";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  console.log("Tabs Layout");
 
   return (
     <Tabs
@@ -37,6 +36,12 @@ export default function TabLayout() {
       }}
       tabBar={(props) => <TabBar {...props} />}
     >
+      <Tabs.Screen
+        name="index"
+        options={{
+          tabBarItemStyle: { display: "none" },
+        }}
+      />
       <Tabs.Screen
         name="(posts)"
         options={{

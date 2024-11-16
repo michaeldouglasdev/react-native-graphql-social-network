@@ -10,18 +10,15 @@ import { Container } from "@/components/grid/container";
 import { Button } from "@/components/button/button";
 import { Avatar } from "@/components/avatar/avatar.component";
 import { useRouter } from "expo-router";
-import { graphql } from "@/graphql/__generated__";
+import { DocumentType, graphql, useFragment } from "@/graphql/__generated__";
 import { useMutation } from "@apollo/client";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { InputArea } from "@/components/input-area/input-area.component";
 import { useMeQuery } from "@/hooks/me.query.hook";
 import { HomeScreen_Query } from "./(tabs)/(posts)";
-
-/*const CreatePost_MutationFragment = graphql(`
-    fragment CreatePost_MutationFragment on Mutation {
-      
-    }
-  `)*/
+import { Feed_QueryFragment } from "@/components/feed/feed.component";
+import { OrderBy } from "@/graphql/__generated__/graphql";
+import { PostItemFragment } from "@/components/post/post.component";
 
 type FormField = {
   content: string;
@@ -56,6 +53,66 @@ const CreatePostScreen: React.FC = () => {
 
       onCompleted() {
         router.back();
+      },
+      update(cache, result) {
+        const homeQuery = cache.readQuery({
+          query: HomeScreen_Query,
+          variables: {
+            data: {
+              order: {
+                createdAt: OrderBy.Desc,
+              },
+              where: {
+                parentPostId: {
+                  equals: null,
+                },
+              },
+              connection: {
+                first: 10,
+              },
+            },
+          },
+        });
+        const feed = useFragment(Feed_QueryFragment, homeQuery);
+        if (!feed) {
+          return;
+        }
+        const { data } = result;
+
+        if (!data) {
+          return;
+        }
+
+        const post = useFragment(PostItemFragment, data.createPost);
+
+        const edge = {
+          cursor: post.id,
+          node: post,
+        };
+        cache.writeQuery<DocumentType<typeof Feed_QueryFragment>>({
+          query: HomeScreen_Query,
+          data: {
+            feed: {
+              ...feed.feed,
+              edges: [edge, ...feed.feed.edges],
+            },
+          },
+          variables: {
+            data: {
+              order: {
+                createdAt: OrderBy.Desc,
+              },
+              where: {
+                parentPostId: {
+                  equals: null,
+                },
+              },
+              connection: {
+                first: 10,
+              },
+            },
+          },
+        });
       },
     });
   };

@@ -11,7 +11,7 @@ export const MessageItemFragment = graphql(`
       id
       name
       username
-      avatar
+      ...UserAvatar
     }
   }
 `);

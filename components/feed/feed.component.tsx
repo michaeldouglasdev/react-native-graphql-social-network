@@ -5,7 +5,22 @@ import {
   FragmentType,
   useFragment,
 } from "@/graphql/__generated__/fragment-masking";
-import { FetchMoreQueryOptions, useMutation } from "@apollo/client";
+import {
+  DocumentNode,
+  FetchMoreQueryOptions,
+  useApolloClient,
+  useMutation,
+} from "@apollo/client";
+import { SwipeToDelete } from "../gestures/swipe-to-delete.component";
+import Animated, {
+  FadeIn,
+  FadeOut,
+  LinearTransition,
+  SlideOutLeft,
+} from "react-native-reanimated";
+import { OrderBy } from "@/graphql/__generated__/graphql";
+import { HomeScreen_Query } from "@/app/(authenticated)/(tabs)/(posts)";
+import { Transition } from "../animations/transition.component";
 
 export const Feed_QueryFragment = graphql(`
   fragment Feed_QueryFragment on Query {
@@ -29,37 +44,60 @@ export const Feed_QueryFragment = graphql(`
 type FeedProps = {
   data: FragmentType<typeof Feed_QueryFragment>;
   onFetchMore: () => void;
-  /*onFetchMore: (
-    data: FetchMoreQueryOptions<
-      { data: FeedPostInput },
-      FragmentType<typeof Feed_QueryFragment>
-    > & {
-      updateQuery?: (
-        previousQueryResult: FragmentType<typeof Feed_QueryFragment>,
-        options: {
-          fetchMoreResult: FragmentType<typeof Feed_QueryFragment>;
-          variables: {
-            data: FeedPostInput;
-            //dataLikes: LikesInput;
-          };
-        }
-      ) => DocumentType<typeof Feed_QueryFragment>;
-    }
-  ) => void;*/
+  dataQuery: DocumentNode;
 };
 
-export const Feed: React.FC<FeedProps> = ({ onFetchMore, ...props }) => {
+export const Feed: React.FC<FeedProps> = ({
+  onFetchMore,
+  dataQuery,
+  ...props
+}) => {
   const data = useFragment(Feed_QueryFragment, props.data);
+  const client = useApolloClient();
 
   const handleFetchMore = () => {
     onFetchMore();
   };
 
-  const renderItemPost = (
-    data: ListRenderItemInfo<{ node: FragmentType<typeof PostItemFragment> }>
-  ) => {
-    const post = useFragment(PostItemFragment, data.item.node);
-    return <Post data={data.item.node} key={post.id} index={data.index} />;
+  const renderItemPost = ({
+    item,
+    index,
+  }: ListRenderItemInfo<{ node: FragmentType<typeof PostItemFragment> }>) => {
+    const post = useFragment(PostItemFragment, item.node);
+    const deletePost = () => {
+      const filtered = data.feed.edges.filter((edge) => edge.cursor != post.id);
+      client.writeQuery({
+        query: dataQuery,
+        data: {
+          feed: {
+            ...data.feed,
+            edges: [...filtered],
+          },
+        },
+        variables: {
+          data: {
+            where: {
+              parentPostId: {
+                equals: null,
+              },
+            },
+            order: {
+              createdAt: OrderBy.Desc,
+            },
+            connection: {
+              first: 10,
+            },
+          },
+        },
+      });
+    };
+    return (
+      <Transition index={index}>
+        <SwipeToDelete onDelete={deletePost}>
+          <Post data={item.node} key={post.id} index={index} />
+        </SwipeToDelete>
+      </Transition>
+    );
   };
 
   if (!data.feed) {
@@ -67,7 +105,7 @@ export const Feed: React.FC<FeedProps> = ({ onFetchMore, ...props }) => {
   }
 
   return (
-    <FlatList
+    <Animated.FlatList
       data={data.feed.edges}
       renderItem={renderItemPost}
       keyExtractor={(item) => item.cursor}

@@ -43,18 +43,18 @@ const cache = new InMemoryCache({
       fields: {
         messages: {
           keyArgs: false,
-          merge(existing = { edges: [] }, incoming) {
-            const existingMessageIds = new Set(
-              existing.edges.map((edge: any) => edge.node.id)
-            );
-
-            const uniqueIncomingEdges = incoming.edges.filter(
-              (edge: any) => !existingMessageIds.has(edge.node.id)
-            );
-
+          merge(existing = { edges: [] }, incoming, options) {
+            /*
+              const existingMessageIds = new Set(
+                existing.edges.map((edge: any) => edge.node.id)
+              );
+              const uniqueIncomingEdges = incoming.edges.filter(
+                (edge: any) => !existingMessageIds.has(edge.node.id)
+              );
+            */
             return {
               ...incoming,
-              edges: [...existing.edges, ...uniqueIncomingEdges],
+              edges: [...existing.edges, ...incoming.edges],
             };
           },
         },

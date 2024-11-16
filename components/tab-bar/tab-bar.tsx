@@ -23,19 +23,21 @@ export const TabBar: React.FC<TabPropsProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        {routes.map((route, index) => {
-          const active = index === activeIndex;
-          const { options } = descriptors[route.key];
+        {routes
+          .filter((route) => route.name !== "index")
+          .map((route, index) => {
+            const active = index + 1 === activeIndex;
+            const { options } = descriptors[route.key];
 
-          return (
-            <TabBarItem
-              active={active}
-              options={options}
-              onPress={() => handleTabNavigation(route.name)}
-              key={route.key}
-            />
-          );
-        })}
+            return (
+              <TabBarItem
+                active={active}
+                options={options}
+                onPress={() => handleTabNavigation(route.name)}
+                key={route.key}
+              />
+            );
+          })}
       </View>
     </View>
   );

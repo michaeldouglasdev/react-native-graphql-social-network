@@ -9,7 +9,7 @@ export const MeQuery = graphql(`
       username
       email
       role
-      avatar
+      ...UserAvatar
     }
   }
 `);

@@ -25,7 +25,7 @@ export const NotificationItemFragment = graphql(/* GraphQL */ `
       id
       name
       username
-      avatar
+      ...UserAvatar
     }
     ... on ReplyPostNotification {
       post {

@@ -70,7 +70,7 @@ export const PostDetail_QueryFragment = graphql(`
         id
         name
         username
-        avatar
+        ...UserAvatar
       }
       createdAt
       replies(data: $dataReplies) {

@@ -1,6 +1,12 @@
-import { router, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
@@ -13,7 +19,6 @@ import {
   useFragment,
 } from "@/graphql/__generated__/fragment-masking";
 import { useMutation } from "@apollo/client";
-//import { PostItemFragment } from "@/graphql/__generated__/graphql";
 
 export const PostItemFragment = graphql(`
   fragment PostItem on Post {
@@ -24,7 +29,7 @@ export const PostItemFragment = graphql(`
       id
       name
       username
-      avatar
+      ...UserAvatar
     }
     replies {
       count
@@ -133,7 +138,7 @@ export const Post: React.FC<PostProps> = ({ index = 0, ...props }) => {
   };
 
   return (
-    <TouchableOpacity onPress={handlePostPress}>
+    <TouchableWithoutFeedback onPress={handlePostPress}>
       <View style={styles.container}>
         <HBox>
           <TouchableOpacity onPress={handleClickAvatar}>
@@ -149,7 +154,6 @@ export const Post: React.FC<PostProps> = ({ index = 0, ...props }) => {
               <Text style={styles.index}># {index}</Text>
             </HBox>
             <Text style={styles.content}>{post.content}</Text>
-            <Text style={styles.content}>{post.id}</Text>
 
             <HBox>
               <HBox>
@@ -179,7 +183,7 @@ export const Post: React.FC<PostProps> = ({ index = 0, ...props }) => {
           </VBox>
         </HBox>
       </View>
-    </TouchableOpacity>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -190,6 +194,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderBottomWidth: 1,
     borderBottomColor: "#333",
+    backgroundColor: "#1A1919",
   },
   name: {
     fontFamily: "InterBold",

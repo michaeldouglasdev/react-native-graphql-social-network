@@ -18,7 +18,7 @@ import {
   DocumentType,
   FragmentType,
   graphql,
-  useFragment,
+  getFragmentData,
 } from "@/graphql/__generated__";
 import { Post, PostItemFragment } from "../post.component";
 import { FetchMoreQueryOptions, useMutation } from "@apollo/client";
@@ -100,7 +100,7 @@ export const PostDetail: React.FC<PostDetailProps> = ({
   fetchMore,
   ...props
 }) => {
-  const { post } = useFragment(PostDetail_QueryFragment, props.data);
+  const { post } = getFragmentData(PostDetail_QueryFragment, props.data);
   const [likePostMutation] = useMutation(LikePost_Mutation);
   const [unlikePostMutation] = useMutation(UnlikePost_Mutation);
 
@@ -180,8 +180,11 @@ export const PostDetail: React.FC<PostDetailProps> = ({
         },
       },
       updateQuery(previousQueryResult, { fetchMoreResult }) {
-        const prev = useFragment(PostDetail_QueryFragment, previousQueryResult);
-        const moreResults = useFragment(
+        const prev = getFragmentData(
+          PostDetail_QueryFragment,
+          previousQueryResult
+        );
+        const moreResults = getFragmentData(
           PostDetail_QueryFragment,
           fetchMoreResult
         );
@@ -198,7 +201,7 @@ export const PostDetail: React.FC<PostDetailProps> = ({
   const renderItemPost = (
     data: ListRenderItemInfo<{ node: FragmentType<typeof PostItemFragment> }>
   ) => {
-    const reply = useFragment(PostItemFragment, data.item.node);
+    const reply = getFragmentData(PostItemFragment, data.item.node);
 
     return <Post data={data.item.node} key={reply.id} index={data.index} />;
   };

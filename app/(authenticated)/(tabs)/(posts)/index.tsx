@@ -1,7 +1,7 @@
 import { Container } from "@/components/grid/container";
 import { OrderBy } from "@/graphql/__generated__/graphql";
 import { useQuery } from "@apollo/client";
-import { graphql, useFragment } from "@/graphql/__generated__";
+import { graphql, getFragmentData } from "@/graphql/__generated__";
 import { Feed, Feed_QueryFragment } from "@/components/feed/feed.component";
 import { FloatingButton } from "@/components/floating-button/floating-button.component";
 import { useRouter } from "expo-router";
@@ -36,7 +36,7 @@ const Home: React.FC = () => {
     router.navigate("/create-post");
   };
   const handleFetchMore = () => {
-    const response = useFragment(Feed_QueryFragment, data);
+    const response = getFragmentData(Feed_QueryFragment, data);
 
     if (!response?.feed.pageInfo.hasNextPage) {
       return;
@@ -58,8 +58,8 @@ const Home: React.FC = () => {
         },
       },
       updateQuery(previousQueryResult, { fetchMoreResult }) {
-        const prev = useFragment(Feed_QueryFragment, previousQueryResult);
-        const moreResult = useFragment(Feed_QueryFragment, fetchMoreResult);
+        const prev = getFragmentData(Feed_QueryFragment, previousQueryResult);
+        const moreResult = getFragmentData(Feed_QueryFragment, fetchMoreResult);
 
         moreResult.feed.edges = [...prev.feed.edges, ...moreResult.feed.edges];
 

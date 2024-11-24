@@ -4,7 +4,7 @@ import { Text, View } from "@/components/Themed";
 import { Container } from "@/components/grid/container";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { TextInput } from "@/components/input/text-input";
-import { graphql, useFragment } from "@/graphql/__generated__";
+import { graphql, getFragmentData } from "@/graphql/__generated__";
 import { useLazyQuery } from "@apollo/client";
 import { Feed, Feed_QueryFragment } from "@/components/feed/feed.component";
 import { OrderBy } from "@/graphql/__generated__/graphql";
@@ -48,7 +48,7 @@ export default function SearchScreen() {
   };
 
   const handleFetchMore = () => {
-    const response = useFragment(Feed_QueryFragment, data);
+    const response = getFragmentData(Feed_QueryFragment, data);
     const content = getValues("content");
 
     fetchMore({
@@ -69,8 +69,8 @@ export default function SearchScreen() {
         },
       },
       updateQuery(previousQueryResult, { fetchMoreResult }) {
-        const prev = useFragment(Feed_QueryFragment, previousQueryResult);
-        const moreResult = useFragment(Feed_QueryFragment, fetchMoreResult);
+        const prev = getFragmentData(Feed_QueryFragment, previousQueryResult);
+        const moreResult = getFragmentData(Feed_QueryFragment, fetchMoreResult);
 
         moreResult.feed.edges = [...prev.feed.edges, ...moreResult.feed.edges];
 
@@ -89,7 +89,13 @@ export default function SearchScreen() {
           placeholder="Type your text..."
         />
       </View>
-      {data ? <Feed data={data} onFetchMore={handleFetchMore} /> : null}
+      {data ? (
+        <Feed
+          data={data}
+          onFetchMore={handleFetchMore}
+          dataQuery={SearchScreen_SearchQuery}
+        />
+      ) : null}
     </Container>
   );
 }

@@ -1,6 +1,4 @@
 import {
-  Button as ButtonRN,
-  ButtonProps as ButtonPropsRN,
   TouchableOpacity,
   StyleSheet,
   Text,
@@ -14,7 +12,7 @@ type ButtonVariant = "primary" | "white";
 type ButtonProps = {
   onPress: () => void;
   title: string;
-  variant: ButtonVariant;
+  variant?: ButtonVariant;
   size?: ButtonSize;
   borderRadius?: ButtonBorderRadius;
   outline?: boolean;
@@ -72,7 +70,7 @@ const sizes: Record<ButtonSize, ViewStyle & TextStyle> = {
 };
 export const Button: React.FC<ButtonProps> = ({
   onPress,
-  variant = "white",
+  variant = "primary",
   title,
   size = "medium",
   borderRadius = "medium",

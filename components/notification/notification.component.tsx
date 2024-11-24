@@ -1,5 +1,8 @@
-import { FragmentType, graphql, useFragment } from "@/graphql/__generated__";
-//import { NotificationItemFragment } from "@/graphql/__generated__/graphql";
+import {
+  FragmentType,
+  graphql,
+  getFragmentData,
+} from "@/graphql/__generated__";
 import {
   ReplyPostNotification,
   ReplyPostNotificationItemFragment,
@@ -9,7 +12,7 @@ function isReplyPostNotification(
   notification: FragmentType<typeof NotificationItemFragment>
   // @ts-ignore
 ): notification is FragmentType<typeof ReplyPostNotificationItemFragment> {
-  const notificationFragment = useFragment(
+  const notificationFragment = getFragmentData(
     NotificationItemFragment,
     notification
   );

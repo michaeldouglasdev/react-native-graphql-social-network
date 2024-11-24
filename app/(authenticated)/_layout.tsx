@@ -1,6 +1,9 @@
+import { useMeQuery } from "@/hooks/me.query.hook";
 import { Stack } from "expo-router";
 
 export default function AuthenticatedLayout() {
+  const { data } = useMeQuery();
+
   return (
     <Stack>
       <Stack.Screen

@@ -1,16 +1,11 @@
 import { Container } from "@/components/grid/container";
-import { PostDetail_QueryFragment } from "@/components/post/post-detail/post-detail.component";
 import {
   ProfileDetailListPost,
   ProfileDetailListPost_QueryFragment,
 } from "@/components/profile-detail/profile-detail-list-post.component";
-import {
-  ProfileDetail,
-  UserDetail_QueryFragment,
-} from "@/components/profile-detail/profile-detail.component";
-import { graphql, useFragment } from "@/graphql/__generated__";
+import { ProfileDetail } from "@/components/profile-detail/profile-detail.component";
+import { graphql, getFragmentData } from "@/graphql/__generated__";
 import { OrderBy } from "@/graphql/__generated__/graphql";
-import { useMeQuery } from "@/hooks/me.query.hook";
 import { useQuery } from "@apollo/client";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
@@ -48,7 +43,7 @@ const ProfileScreen: React.FC = () => {
   });
 
   const handleFetchMore = () => {
-    const feed = useFragment(ProfileDetailListPost_QueryFragment, data);
+    const feed = getFragmentData(ProfileDetailListPost_QueryFragment, data);
 
     if (!feed?.feed.pageInfo.hasNextPage) {
       return;
@@ -74,11 +69,11 @@ const ProfileScreen: React.FC = () => {
         includeUser: false,
       },
       updateQuery(prevQueryResult, { fetchMoreResult }) {
-        const prev = useFragment(
+        const prev = getFragmentData(
           ProfileDetailListPost_QueryFragment,
           prevQueryResult
         );
-        const moreResult = useFragment(
+        const moreResult = getFragmentData(
           ProfileDetailListPost_QueryFragment,
           fetchMoreResult
         );

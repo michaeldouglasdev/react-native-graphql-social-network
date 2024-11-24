@@ -1,4 +1,4 @@
-import { InMemoryCache } from "@apollo/client";
+import { gql, InMemoryCache } from "@apollo/client";
 import PossibleTypes from "@/graphql/__generated__/graphql";
 import { MeQuery } from "@/hooks/me.query.hook";
 import { StorageService } from "@/services/storage.service";
@@ -6,6 +6,46 @@ import { StorageService } from "@/services/storage.service";
 const cache = new InMemoryCache({
   possibleTypes: PossibleTypes.possibleTypes,
   typePolicies: {
+    Mutation: {
+      fields: {
+        login: {
+          merge(_, incoming, { cache }) {
+            const user = cache.readFragment<any>({
+              id: incoming.user.__ref,
+              fragment: gql`
+                fragment UserAvatar on User {
+                  id
+                  avatar
+                }
+                fragment UserFragment on User {
+                  id
+                  name
+                  username
+                  email
+                  role
+                  ...UserAvatar
+                }
+              `,
+              fragmentName: "UserFragment",
+            });
+            cache.writeQuery({
+              query: MeQuery,
+              data: {
+                __typename: "Query",
+                me: user,
+              },
+            });
+
+            Promise.all([
+              StorageService.setItem("ME", user),
+              StorageService.setItemString("TOKEN_AUTH", incoming.accessToken),
+            ]).catch(console.error);
+
+            return incoming;
+          },
+        },
+      },
+    },
     Query: {
       fields: {
         notifications: {

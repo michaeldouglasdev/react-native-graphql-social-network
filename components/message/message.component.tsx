@@ -1,4 +1,8 @@
-import { FragmentType, graphql, useFragment } from "@/graphql/__generated__";
+import {
+  FragmentType,
+  graphql,
+  getFragmentData,
+} from "@/graphql/__generated__";
 import { useMeQuery } from "@/hooks/me.query.hook";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -20,7 +24,7 @@ type MessageProps = {
   data: FragmentType<typeof MessageItemFragment>;
 };
 export const Message: React.FC<MessageProps> = (props) => {
-  const message = useFragment(MessageItemFragment, props.data);
+  const message = getFragmentData(MessageItemFragment, props.data);
   const { data } = useMeQuery();
   const senderIsMe = message.sender.id === data?.me.id;
   return (

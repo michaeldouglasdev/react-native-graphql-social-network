@@ -1,4 +1,8 @@
-import { FragmentType, graphql, useFragment } from "@/graphql/__generated__";
+import {
+  FragmentType,
+  graphql,
+  getFragmentData,
+} from "@/graphql/__generated__";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Avatar } from "../avatar/avatar.component";
 import { VBox } from "../grid/vbox";
@@ -17,7 +21,7 @@ type UserProps = {
   onPress: (id: string) => void;
 };
 export const UserItem: React.FC<UserProps> = ({ onPress, ...props }) => {
-  const user = useFragment(UserItemFragment, props.data);
+  const user = getFragmentData(UserItemFragment, props.data);
 
   if (!user) {
     return null;

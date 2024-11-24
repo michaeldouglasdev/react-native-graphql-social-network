@@ -23,13 +23,9 @@ export const Header: React.FC<HeaderProps> = ({
   const { top } = useSafeAreaInsets();
   const { data } = useMeQuery();
 
-  if (!data?.me) {
-    return;
-  }
-
   const getAvatar = () => {
     if (avatar === true) {
-      return data.me;
+      return data?.me;
     } else if (typeof avatar === "object") {
       return avatar;
     }
@@ -62,8 +58,9 @@ export const Header: React.FC<HeaderProps> = ({
             disabled={disabledPressAvatar}
           />
         )}
-        <Text style={[styles.title]}>{title}</Text>
-
+        <View style={styles.titleContainer}>
+          <Text style={[styles.title]}>{title}</Text>
+        </View>
         {icon ? (
           <View style={[styles.right]}>
             <View style={styles.iconWrapper}>
@@ -96,6 +93,9 @@ const styles = StyleSheet.create({
   },
   content: {
     alignItems: "center",
+  },
+  titleContainer: {
+    height: 24,
   },
   title: {
     fontSize: 16,

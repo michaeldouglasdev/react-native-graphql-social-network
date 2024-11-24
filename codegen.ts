@@ -19,7 +19,8 @@ const codegen: CodegenConfig = {
         useExplicitTyping: true,
       },
       presetConfig: {
-        fragmentMasking: true,
+        //fragmentMasking: true,
+        fragmentMasking: { unmaskFunctionName: "getFragmentData" },
         //persistedDocuments: true,
       },
       //documentTransforms: [addTypenameSelectionDocumentTransform],

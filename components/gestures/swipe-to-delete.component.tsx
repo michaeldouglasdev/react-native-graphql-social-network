@@ -73,8 +73,8 @@ export const SwipeToDelete: React.FC<SwipeToDelete> = ({
     .onEnd((event) => {
       const dx = Math.abs(translateX.value);
 
-      if (dx > width * 0.25) {
-        translateX.value = withTiming(translateX.value * 4, {}, () => {
+      if (dx > width * 0.15) {
+        translateX.value = withTiming(translateX.value * 10, {}, () => {
           runOnJS(onDelete)();
         });
       } else {

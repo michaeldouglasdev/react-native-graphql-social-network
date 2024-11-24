@@ -3,13 +3,8 @@ import { StyleSheet } from "react-native";
 import { Container } from "@/components/grid/container";
 import { Header } from "@/components/header/header.component";
 import { FloatingButton } from "@/components/floating-button/floating-button.component";
-import {
-  DocumentType,
-  FragmentType,
-  graphql,
-  useFragment,
-} from "@/graphql/__generated__";
-import { useApolloClient, useQuery, useSubscription } from "@apollo/client";
+import { graphql } from "@/graphql/__generated__";
+import { useQuery, useSubscription } from "@apollo/client";
 import { ConversationList } from "@/components/conversation/conversation-list/conversation-list.component";
 import { OrderBy } from "@/graphql/__generated__/graphql";
 import { useRouter } from "expo-router";
@@ -80,9 +75,9 @@ export default function ConversationsScreen() {
       },
     },
     /*onCompleted(data) {
-      const { conversations } = useFragment(Conversations_QueryFragment, data);
+      const { conversations } = getFragmentData(Conversations_QueryFragment, data);
       conversations.edges.map((edge) => {
-        const conversation = useFragment(ConversationItemFragment, edge.node);
+        const conversation = getFragmentData(ConversationItemFragment, edge.node);
 
         client.writeQuery<DocumentType<typeof MessagesList_QueryFragment>>({
           query: ConversationDetailScreen_Query,

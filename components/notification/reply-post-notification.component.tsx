@@ -3,7 +3,11 @@ import { VBox } from "../grid/vbox";
 import { HBox } from "../grid/hbox";
 
 import { Avatar } from "../avatar/avatar.component";
-import { FragmentType, graphql, useFragment } from "@/graphql/__generated__";
+import {
+  FragmentType,
+  graphql,
+  getFragmentData,
+} from "@/graphql/__generated__";
 import { useRouter } from "expo-router";
 
 export const ReplyPostNotificationItemFragment = graphql(`
@@ -14,6 +18,7 @@ export const ReplyPostNotificationItemFragment = graphql(`
       id
       name
       username
+      ...UserAvatar
     }
     post {
       id
@@ -26,7 +31,7 @@ type NotificationProps = {
 };
 
 export const ReplyPostNotification: React.FC<NotificationProps> = (props) => {
-  const notification = useFragment(
+  const notification = getFragmentData(
     ReplyPostNotificationItemFragment,
     props.notification
   );

@@ -1,4 +1,8 @@
-import { FragmentType, graphql, useFragment } from "@/graphql/__generated__";
+import {
+  FragmentType,
+  graphql,
+  getFragmentData,
+} from "@/graphql/__generated__";
 import { FlatList, ListRenderItemInfo } from "react-native";
 import { UserItem, UserItemFragment } from "../user.component";
 
@@ -25,7 +29,7 @@ type UserListProps = {
   onPress: (id: string) => void;
 };
 export const UserList: React.FC<UserListProps> = ({ onPress, ...props }) => {
-  const data = useFragment(Users_QueryFragment, props.data);
+  const data = getFragmentData(Users_QueryFragment, props.data);
 
   if (!data) {
     return null;
@@ -34,7 +38,7 @@ export const UserList: React.FC<UserListProps> = ({ onPress, ...props }) => {
   const renderItem = (
     data: ListRenderItemInfo<{ node: FragmentType<typeof UserItemFragment> }>
   ) => {
-    const user = useFragment(UserItemFragment, data.item.node);
+    const user = getFragmentData(UserItemFragment, data.item.node);
 
     return <UserItem data={data.item.node} key={user.id} onPress={onPress} />;
   };

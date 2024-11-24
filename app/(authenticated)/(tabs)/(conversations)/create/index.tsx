@@ -1,25 +1,14 @@
 import { Container } from "@/components/grid/container";
 import { TextInput } from "@/components/input/text-input";
 import { UserList } from "@/components/user/user-list/user-list.component";
-import {
-  DocumentType,
-  FragmentType,
-  graphql,
-  useFragment,
-} from "@/graphql/__generated__";
+import { graphql, getFragmentData } from "@/graphql/__generated__";
 import { OrderBy } from "@/graphql/__generated__/graphql";
-import {
-  ApolloClient,
-  useApolloClient,
-  useLazyQuery,
-  useMutation,
-} from "@apollo/client";
+import { useApolloClient, useLazyQuery, useMutation } from "@apollo/client";
 import { useRouter } from "expo-router";
 import { useForm } from "react-hook-form";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { ConversationsScreen_Query } from "..";
 import { Conversations_QueryFragment } from "@/components/conversation/conversation-list/conversation-list.component";
-import { ConversationDetailScreen_Query } from "../details/[id]";
 
 type FormField = {
   search: string;
@@ -107,15 +96,9 @@ const CreateConversationScreen: React.FC = () => {
   };
 
   const handleCreate = (id: string) => {
-    console.log("Create init");
     const conversationsMasked = client.readQuery({
       query: ConversationsScreen_Query,
     });
-
-    const conversations = useFragment(
-      Conversations_QueryFragment,
-      conversationsMasked
-    );
 
     createConversation({
       variables: {

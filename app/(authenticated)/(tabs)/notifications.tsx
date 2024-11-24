@@ -1,7 +1,11 @@
 import { Container } from "@/components/grid/container";
 import { useQuery, useSubscription } from "@apollo/client";
 
-import { DocumentType, graphql, useFragment } from "@/graphql/__generated__";
+import {
+  DocumentType,
+  graphql,
+  getFragmentData,
+} from "@/graphql/__generated__";
 import {
   NotificationList,
   NotificationList_QueryFragment,
@@ -47,15 +51,15 @@ const NotificationsScreen: React.FC = () => {
       const cacheData = client.cache.readQuery({
         query: NotificationScreen_Query,
       });
-      const query = useFragment(NotificationList_QueryFragment, cacheData);
+      const query = getFragmentData(NotificationList_QueryFragment, cacheData);
 
-      const newNotification = useFragment(
+      const newNotification = getFragmentData(
         NotificationItemFragment,
         data.data?.notificationSubscribe
       );
 
       const newNotificationItem: any =
-        data.data?.notificationSubscribe; /*= useFragment(
+        data.data?.notificationSubscribe; /*= getFragmentData(
           NotificationItemFragment,
           newNotification?.notificationSubscribe
         );*/

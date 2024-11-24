@@ -1,7 +1,11 @@
-import { FragmentType, graphql, useFragment } from "@/graphql/__generated__";
-import { ListRenderItemInfo, StyleSheet, View } from "react-native";
+import {
+  FragmentType,
+  graphql,
+  getFragmentData,
+} from "@/graphql/__generated__";
+import { ListRenderItemInfo, StyleSheet } from "react-native";
 import { Message, MessageItemFragment } from "../message.component";
-import Animated, { LinearTransition } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { useApolloClient, useLazyQuery } from "@apollo/client";
 import { OrderBy } from "@/graphql/__generated__/graphql";
 
@@ -55,14 +59,17 @@ type MessageListProps = {
   data: FragmentType<typeof MessageList_ConversationDetailFragment>;
 };
 export const MessageList: React.FC<MessageListProps> = (props) => {
-  const data = useFragment(MessageList_ConversationDetailFragment, props.data);
+  const data = getFragmentData(
+    MessageList_ConversationDetailFragment,
+    props.data
+  );
   const [paginate] = useLazyQuery(MessagesList_PaginationFragment);
   const client = useApolloClient();
 
   const renderItem = (
     data: ListRenderItemInfo<{ node: FragmentType<typeof MessageItemFragment> }>
   ) => {
-    const message = useFragment(MessageItemFragment, data.item.node);
+    const message = getFragmentData(MessageItemFragment, data.item.node);
     return <Message data={data.item.node} key={message.id} />;
   };
 
@@ -113,7 +120,6 @@ export const MessageList: React.FC<MessageListProps> = (props) => {
         flexDirection: "column-reverse",
         justifyContent: "flex-end",
       }}
-      itemLayoutAnimation={LinearTransition}
       inverted
       keyboardDismissMode="interactive"
     />

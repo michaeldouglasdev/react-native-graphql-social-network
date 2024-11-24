@@ -6,7 +6,7 @@ import {
   MessageList,
   MessageList_ConversationDetailFragment,
 } from "@/components/message/message-list/message-list.component";
-import { graphql, useFragment } from "@/graphql/__generated__";
+import { graphql, getFragmentData } from "@/graphql/__generated__";
 import { useMeQuery } from "@/hooks/me.query.hook";
 
 import { useMutation, useQuery } from "@apollo/client";
@@ -70,7 +70,7 @@ const ConversationDetailScreen: React.FC = () => {
   });
 
   const me = useMeQuery();
-  const dataUnmasked = useFragment(
+  const dataUnmasked = getFragmentData(
     MessageList_ConversationDetailFragment,
     data
   );

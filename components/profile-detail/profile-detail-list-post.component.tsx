@@ -1,5 +1,9 @@
 import React from "react";
-import { FragmentType, graphql, useFragment } from "@/graphql/__generated__";
+import {
+  FragmentType,
+  graphql,
+  getFragmentData,
+} from "@/graphql/__generated__";
 import { FlatList, ListRenderItemInfo } from "react-native";
 import { Post, PostItemFragment } from "../post/post.component";
 
@@ -30,14 +34,14 @@ export const ProfileDetailListPost: React.FC<ProfileDetailListPostProps> = ({
   onFetchMore,
   ...props
 }) => {
-  const data = useFragment(ProfileDetailListPost_QueryFragment, props.data);
+  const data = getFragmentData(ProfileDetailListPost_QueryFragment, props.data);
 
   const renderItemPost = (
     data: ListRenderItemInfo<{
       node: FragmentType<typeof PostItemFragment>;
     }>
   ) => {
-    const post = useFragment(PostItemFragment, data.item.node);
+    const post = getFragmentData(PostItemFragment, data.item.node);
 
     return <Post data={data.item.node} key={post.id} index={data.index} />;
   };

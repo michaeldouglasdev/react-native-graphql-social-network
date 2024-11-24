@@ -6,7 +6,7 @@ export const AuthorizationLink = setContext(async (_, { headers }) => {
   return {
     headers: {
       ...headers,
-      ...(token ? { authorization: `Bearer ${token}` } : {}),
+      ...(token ? { authorization: `${token}` } : {}),
     },
   };
 });

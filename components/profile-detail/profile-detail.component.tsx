@@ -1,7 +1,11 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Avatar } from "../avatar/avatar.component";
-import { FragmentType, graphql, useFragment } from "@/graphql/__generated__";
+import {
+  FragmentType,
+  graphql,
+  getFragmentData,
+} from "@/graphql/__generated__";
 import { VBox } from "../grid/vbox";
 import { HBox } from "../grid/hbox";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -52,7 +56,7 @@ type ProfileDetailProps = {
   data: FragmentType<typeof UserDetail_QueryFragment>;
 };
 export const ProfileDetail: React.FC<ProfileDetailProps> = (props) => {
-  const { user } = useFragment(UserDetail_QueryFragment, props.data);
+  const { user } = getFragmentData(UserDetail_QueryFragment, props.data);
   const { data: me } = useMeQuery();
   const [followUser] = useMutation(FollowUser_Mutation);
   const [unfollowUser] = useMutation(UnfollowUser_Mutation);
@@ -176,6 +180,9 @@ export const ProfileDetail: React.FC<ProfileDetailProps> = (props) => {
             query: MeQuery,
           });
           StorageService.setItem("ME", cachedUser?.me);
+        },
+        optimisticResponse: {
+          uploadAvatar: file.uri,
         },
       });
     }

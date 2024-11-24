@@ -10,7 +10,11 @@ import { Container } from "@/components/grid/container";
 import { Button } from "@/components/button/button";
 import { Avatar } from "@/components/avatar/avatar.component";
 import { useRouter } from "expo-router";
-import { DocumentType, graphql, useFragment } from "@/graphql/__generated__";
+import {
+  DocumentType,
+  graphql,
+  getFragmentData,
+} from "@/graphql/__generated__";
 import { useMutation } from "@apollo/client";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { InputArea } from "@/components/input-area/input-area.component";
@@ -73,7 +77,7 @@ const CreatePostScreen: React.FC = () => {
             },
           },
         });
-        const feed = useFragment(Feed_QueryFragment, homeQuery);
+        const feed = getFragmentData(Feed_QueryFragment, homeQuery);
         if (!feed) {
           return;
         }
@@ -83,7 +87,7 @@ const CreatePostScreen: React.FC = () => {
           return;
         }
 
-        const post = useFragment(PostItemFragment, data.createPost);
+        const post = getFragmentData(PostItemFragment, data.createPost);
 
         const edge = {
           cursor: post.id,

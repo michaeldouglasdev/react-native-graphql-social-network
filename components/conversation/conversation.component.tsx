@@ -1,6 +1,10 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { FragmentType, graphql, useFragment } from "@/graphql/__generated__";
+import {
+  FragmentType,
+  graphql,
+  getFragmentData,
+} from "@/graphql/__generated__";
 import { Avatar } from "../avatar/avatar.component";
 import { useMeQuery } from "@/hooks/me.query.hook";
 import { HBox } from "../grid/hbox";
@@ -39,7 +43,7 @@ type ConversationProps = {
 };
 
 export const Conversation: React.FC<ConversationProps> = (props) => {
-  const conversation = useFragment(ConversationItemFragment, props.data);
+  const conversation = getFragmentData(ConversationItemFragment, props.data);
   const { data } = useMeQuery();
   const router = useRouter();
   const receiver = conversation.participants.find(

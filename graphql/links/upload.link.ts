@@ -1,7 +1,11 @@
 //@ts-ignore
 import createUploadLink from "apollo-upload-client/createUploadLink";
+import { Platform } from "react-native";
 
-const uri = "http://localhost:4000/graphql";
+const uri = Platform.select({
+  android: "http://10.0.2.2:4000/graphql",
+  ios: "http://localhost:4000/graphql",
+});
 
 export const uploadLink = createUploadLink({
   uri,

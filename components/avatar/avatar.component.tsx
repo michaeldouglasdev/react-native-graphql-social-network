@@ -80,7 +80,7 @@ export const Avatar: React.FC<AvatarProps> = React.memo(
             return "";
           }
 
-          // isTemp (optimistic Response)
+          // temporary file (optimistic Response)
           if (user.avatar.startsWith("file://")) {
             return user.avatar;
           }
@@ -101,7 +101,7 @@ export const Avatar: React.FC<AvatarProps> = React.memo(
           });
           const encoded = Buffer.from(imageRequest).toString("base64");
 
-          return `${env.process.AWS_SERVERLESS_IMAGE_HANDLER}/${encoded}`;
+          return `${process.env.AWS_SERVERLESS_IMAGE_HANDLER}/${encoded}`;
         },
       [user?.avatar]
     );
